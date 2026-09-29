@@ -1,20 +1,23 @@
 {
   "name": "vaitik-dental-care",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "node --conditions=react-server --test tests/*.test.js",
+    "test:db": "tests/db/run.sh"
   },
   "dependencies": {
     "@phosphor-icons/web": "^2.1.2",
+    "@supabase/ssr": "^0.12.0",
+    "@supabase/supabase-js": "^2.117.0",
+    "next": "^15.5.26",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^5.0.0",
-    "vite": "^7.1.0"
+    "react-dom": "^19.1.0",
+    "server-only": "^0.0.1",
+    "zod": "^4.1.0"
   }
 }
