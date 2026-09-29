@@ -12,7 +12,9 @@ const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)'
 function scrollToId(id) {
   const el = document.getElementById(id);
   if (!el) return;
-  window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 8, behavior: reducedMotion() ? 'auto' : 'smooth' });
+  // Leave room for the sticky header, which always stays on screen.
+  const headerH = document.querySelector('.site-header')?.offsetHeight || 0;
+  window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - headerH - 8, behavior: reducedMotion() ? 'auto' : 'smooth' });
 }
 
 // Clinic time, refreshed every minute so "Open now" badges stay correct.
@@ -27,22 +29,6 @@ function useClinicNow(serverNow) {
   return now;
 }
 
-// Hide the header when scrolling down, show it when scrolling up.
-function useHideOnScroll() {
-  const [hidden, setHidden] = useState(false);
-  useEffect(() => {
-    let lastY = window.scrollY;
-    const onScroll = () => {
-      const y = window.scrollY;
-      if (y > lastY + 4 && y > 160) setHidden(true);
-      else if (y < lastY - 4 || y < 160) setHidden(false);
-      lastY = y;
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-  return hidden;
-}
 
 // Fade sections in as they scroll into view. Sections already on screen are left alone.
 function useReveal() {
@@ -70,7 +56,6 @@ function useReveal() {
 export default function Site({ data, view = 'home', serverNow }) {
   const isHome = view === 'home';
   const now = useClinicNow(serverNow);
-  const headerHidden = useHideOnScroll();
   const booking = useBooking(data.settings);
   const [menu, setMenu] = useState(false);
   const [chooser, setChooser] = useState(null); // 'wa' | 'call' | null
@@ -137,7 +122,7 @@ export default function Site({ data, view = 'home', serverNow }) {
 
   return (
     <>
-      <header className={'site-header' + (headerHidden && !menu ? ' is-hidden' : '')}>
+      <header className="site-header">
         <div className="header-bar">
           <a href={isHome ? '#top' : '/'} aria-label="Vaitik Dental Care home" className="logo">
             <span className="logo-word">VAITIK</span>

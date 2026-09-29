@@ -48,8 +48,7 @@ p { text-wrap: pretty; }
 .btn-stack .odia { font-size: 14px; font-weight: 500; }
 
 /* ---------- header ---------- */
-.site-header { position: sticky; top: 0; z-index: 50; background: var(--navy-900); transition: transform 300ms ease; }
-.site-header.is-hidden { transform: translateY(-100%); }
+.site-header { position: sticky; top: 0; z-index: 50; background: var(--navy-900); }
 .header-bar {
   max-width: 1200px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 24px); height: 64px;
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
@@ -183,7 +182,7 @@ p { text-wrap: pretty; }
 .rev-card figcaption strong { color: var(--ink); }
 
 /* ---------- booking ---------- */
-.book-section { scroll-margin-top: 16px; }
+.book-section { scroll-margin-top: 80px; }
 .book-title .odia { font-size: 18px; color: var(--muted); }
 .book-layout { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
 .book-panel {
