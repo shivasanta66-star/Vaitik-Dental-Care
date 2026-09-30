@@ -10,6 +10,8 @@ export const SITE = {
   facebook: '[FACEBOOK LINK]',
   instagram: '[INSTAGRAM LINK]',
   youtube: '[YOUTUBE LINK]',
+  // Google ratings, as shown on the two Maps listings.
+  ratings: { koraput: { score: '4.9', count: 56 }, semiliguda: { score: '5.0', count: 7 } },
   reviewsKoraput: 'https://maps.app.goo.gl/un9H1U9F6WPHQBRL9',
   reviewsSemiliguda: 'https://maps.app.goo.gl/3uNzFLx3curaQ5u29',
   // Shown on the privacy policy page.
@@ -21,6 +23,11 @@ export const SITE = {
   // Photo for the treatment chair room (public/images/…), or null for the placeholder.
   heroImage: null,
 };
+
+// Values still in [SQUARE BRACKETS] are unfinished. The site never shows them to visitors.
+export const isPlaceholder = (v) => typeof v === 'string' && /\[[^\]]*\]/.test(v);
+export const real = (v) => (v && !isPlaceholder(v) ? v : '');
+export const withoutPlaceholders = (v) => (v || '').replace(/\s*\[[^\]]*\]/g, '').trim();
 
 export const FAQS = [
   { q: 'How much will my treatment cost?', a: 'It depends on what the tooth needs. After the check-up we give you a written plan with the cost before we start. The "from" prices on this page are starting points only.' },
@@ -69,7 +76,7 @@ export const FALLBACK = {
   ],
   doctors: [
     { id: 'd1', name: 'Dr Ch Kartik', credentials: '[QUALIFICATION] · Dental Council Reg. No. [REG. NO.]', days: '[BRANCH DAYS, e.g. Koraput Mon–Sat, Semiliguda Sun evening]', focus: '[ONE LINE ON FOCUS, e.g. root canal treatment and extractions]', photo: null },
-    { id: 'd2', name: 'Dr Vaishali [SURNAME]', credentials: '[QUALIFICATION] · Dental Council Reg. No. [REG. NO.]', days: '[BRANCH DAYS]', focus: "[ONE LINE ON FOCUS, e.g. children's dentistry and braces]", photo: null },
+    { id: 'd2', name: 'Dr Vaishali Shukla', credentials: '[QUALIFICATION] · Dental Council Reg. No. [REG. NO.]', days: '[BRANCH DAYS]', focus: "[ONE LINE ON FOCUS, e.g. children's dentistry and braces]", photo: null },
   ],
   reviews: [
     { text: 'The clinic is hygienic ,clean with patient friendly environment. The dentist Ch Kartik sir was  gentle & highly professional, explain everything clearly, and don\'t push unnecessary treatments."The doctor & staff of this clinic behave politely with patients.They use modern techniques that make the treatment much faster.The doctors confident & motivation act like a shield against fear.\n\nHIGHLY  RECOMMENDED\nThank you', initial: 'Nirmala G', branch: 'Koraput' },

@@ -16,8 +16,6 @@ export const metadata = {
     locale: 'en_IN',
     title: 'Vaitik Dental Care - Dentist in Koraput and Semiliguda',
     description: 'Check-up, X-ray, written plan and cost before any treatment. Book at Koraput or Semiliguda.',
-    // TODO: add a real clinic photo (1200x630) at public/images/og.jpg
-    images: ['/images/og.jpg'],
   },
 };
 
