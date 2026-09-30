@@ -394,7 +394,7 @@ export default function Site({ data, view = 'home', serverNow }) {
                         Read all on Google (Koraput)
                       </a>
                       <a href={SITE.reviewsSemiliguda} target="_blank" rel="noopener">
-                        Semiliguda
+                        Read all on Google (Semiliguda)
                       </a>
                     </div>
                   </div>

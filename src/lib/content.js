@@ -72,10 +72,10 @@ export const FALLBACK = {
     { id: 'd2', name: 'Dr Vaishali [SURNAME]', credentials: '[QUALIFICATION] · Dental Council Reg. No. [REG. NO.]', days: '[BRANCH DAYS]', focus: "[ONE LINE ON FOCUS, e.g. children's dentistry and braces]", photo: null },
   ],
   reviews: [
-    { text: '[Paraphrase of a Google review — e.g. about a root canal and how it was explained]', initial: '[A.]', branch: 'Koraput' },
-    { text: '[Paraphrase of a Google review — e.g. about bringing a child for a check-up]', initial: '[S.]', branch: 'Koraput' },
-    { text: '[Paraphrase of a Google review — e.g. about an evening appointment after work]', initial: '[P.]', branch: 'Semiliguda' },
-    { text: '[Paraphrase of a Google review — e.g. about cost being told upfront]', initial: '[R.]', branch: 'Koraput' },
+    { text: 'If you r looking for the best dental care treatment visit Vaitik dental clinic in semiliguda.Dr.vaishali mam is not only incredibly sweet in her manner and behaviour but her treatment is even better.she performance painless root canal treatment and extractions without you feeling any pain at all.my advice is to definitely visit Vaitik Dental care at least once...thank you so much vaishali ma\'am and kartik sir ...', initial: 'Beena Sarkar', branch: 'Semiliguda' },
+    { text: 'I visited vaitik dental care with severe pain and swelling. Dr. Vaishali treatment me with outmost care and explained me everything clearly regarding the procedure.... The treatment was smooth and painless... I highly recommend', initial: 'suchi suchitra', branch: 'Semiliguda' },
+    { text: 'Painless extraction. Amazing doctor. All the facilities available.', initial: 'Erwin Bara', branch: 'Semiliguda' },
+    { text: 'Excellent dental care and very professional doctor. Highly recommended!', initial: 'Dr Abhijit', branch: 'Semiliguda' },
   ],
   gallery: [
     { id: 'g1', caption: 'Braces', before: null, after: null },
