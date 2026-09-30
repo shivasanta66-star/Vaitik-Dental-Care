@@ -470,9 +470,10 @@ export default function Site({ data, view = 'home', serverNow }) {
                     <div className="map-frame">
                       <iframe
                         title={'Map of Vaitik Dental Care, ' + mapB.name}
-                        src={'https://maps.google.com/maps?q=' + mapB.lat + ',' + mapB.lng + '&z=16&output=embed'}
+                        src={mapB.mapSrc}
                         loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        allowFullScreen
                       />
                     </div>
                     <div className="map-info">
