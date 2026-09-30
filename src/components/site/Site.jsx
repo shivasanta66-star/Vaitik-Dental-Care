@@ -73,7 +73,8 @@ export default function Site({ data, view = 'home', serverNow }) {
   const branches = data.branches.map((b) => branchView(b, now));
   const mapB = branches.find((b) => b.slug === mapTab) || branches[0];
   // Each before/after pair shows as two photos, up to six on the page.
-  const photos = data.gallery.slice(0, 3).flatMap((g) => [
+  // Pairs without both real photos are skipped, so no stand-in art is ever shown as a patient result.
+  const photos = data.gallery.filter((g) => g.before && g.after).slice(0, 3).flatMap((g) => [
     { id: g.id + '-b', src: g.before, caption: g.caption + ' · before', alt: 'Before: ' + g.caption + ' (shown with patient consent)' },
     { id: g.id + '-a', src: g.after, caption: g.caption + ' · after', alt: 'After: ' + g.caption },
   ]);
@@ -183,18 +184,9 @@ export default function Site({ data, view = 'home', serverNow }) {
                   </p>
                   <h1 id="hero-title">Gentle dental care in Koraput and Semiliguda, explained before we begin.</h1>
                   <p className="hero-lead">We check your teeth, show you the X-ray and give you the plan and cost in writing. Treatment starts only when you say yes.</p>
-                  <div className="hero-stats">
-                    <div className="hero-stat">
-                      <p className="hero-stat-big">
-                        4.9 <span aria-hidden="true">★</span> on Google
-                      </p>
-                      <p className="hero-stat-small">56 reviews, Koraput branch</p>
-                    </div>
-                    <div className="hero-stat">
-                      <p className="hero-stat-big">Open 7 days</p>
-                      <p className="hero-stat-small">till 9:30 PM at Koraput</p>
-                    </div>
-                  </div>
+                  <p className="hero-facts">
+                    <strong>4.9 ★</strong> from 56 Google reviews at Koraput <span aria-hidden="true">/</span> open 7 days, till 9:30 PM
+                  </p>
                   <div className="hero-ctas">
                     <button type="button" onClick={openWa} className="btn btn-wa hero-wa">
                       <i className="ph-duotone ph-whatsapp-logo" />
@@ -264,46 +256,35 @@ export default function Site({ data, view = 'home', serverNow }) {
               </div>
             </section>
 
-            <section aria-label="Our promises" data-reveal="" className="tint">
+            <section aria-label="Our promises" data-reveal="" className="promise-strip">
               <ul className="promises">
-                {[
-                  ['ph-clipboard-text', 'Plan and cost explained before treatment'],
-                  ['ph-hand-palm', 'No unnecessary procedures'],
-                  ['ph-shield-check', 'Sterilised instruments, single-use where possible'],
-                  ['ph-moon-stars', 'Evening and Sunday appointments'],
-                ].map(([icon, text]) => (
-                  <li key={icon}>
-                    <i className={'ph-duotone ' + icon} aria-hidden="true" />
-                    <span>{text}</span>
-                  </li>
+                {['Plan and cost explained before treatment', 'No unnecessary procedures', 'Sterilised instruments, single-use where possible', 'Evening and Sunday appointments'].map((text) => (
+                  <li key={text}>{text}</li>
                 ))}
               </ul>
             </section>
 
             <section id="treatments" aria-labelledby="treat-title" data-reveal="" className="anchor">
               <div className="wrap stack gap-24">
-                <div className="stack gap-8 head-narrow">
+                <div className="split-head">
                   <h2 id="treat-title" className="h2">
                     Treatments
                   </h2>
                   <p className="muted">Prices are starting points. Your final cost is explained after the check-up, before anything is done.</p>
                 </div>
-                <div className="grid treat-grid">
+                <ul className="treat-list">
                   {data.treatments.map((t) => (
-                    <article key={t.name} className="card treat-card">
-                      <span aria-hidden="true" className="treat-icon">
-                        <i className={'ph-duotone ' + t.icon} />
-                      </span>
-                      <h3 className="h3">{t.name}</h3>
+                    <li key={t.name} className="treat-row">
+                      <h3 className="treat-name">{t.name}</h3>
                       <p className="treat-desc">{t.desc}</p>
                       <p className="treat-price">{t.price}</p>
-                      <button type="button" onClick={() => bookTreatment(t.name)} className="btn-link treat-book">
-                        Book this
+                      <button type="button" onClick={() => bookTreatment(t.name)} className="btn-link treat-book" aria-label={'Book ' + t.name}>
+                        Book
                         <i className="ph-duotone ph-arrow-right" aria-hidden="true" />
                       </button>
-                    </article>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
             </section>
 
@@ -324,7 +305,7 @@ export default function Site({ data, view = 'home', serverNow }) {
                   ].map(([title, text], i) => (
                     <li key={title}>
                       <span aria-hidden="true" className="step-num">
-                        {i + 1}
+                        {String(i + 1).padStart(2, '0')}
                       </span>
                       <h3 className="h3">{title}</h3>
                       <p>{text}</p>
@@ -395,7 +376,7 @@ export default function Site({ data, view = 'home', serverNow }) {
                       <h2 id="rev-title" className="h2">
                         What patients say
                       </h2>
-                      <p className="muted">4.9 from 56 reviews at Koraput · 5.0 from 7 at Semiliguda</p>
+                      <p className="muted">All five-star Google reviews. Koraput 4.9 from 56, Semiliguda 5.0 from 7.</p>
                     </div>
                     <div className="rev-links">
                       <a href={SITE.reviewsKoraput} target="_blank" rel="noopener">
@@ -406,12 +387,9 @@ export default function Site({ data, view = 'home', serverNow }) {
                       </a>
                     </div>
                   </div>
-                  <div className="grid rev-grid">
+                  <div className="rev-layout">
                     {data.reviews.map((r, i) => (
-                      <figure key={i} className="rev-card">
-                        <p aria-label="5 out of 5 stars" className="stars">
-                          ★★★★★
-                        </p>
+                      <figure key={i} className={'rev-card' + (i === 0 ? ' is-lead' : '')}>
                         <blockquote>
                           {preview(r.text)}
                           {r.text.length > REVIEW_PREVIEW_CHARS && (
@@ -431,7 +409,8 @@ export default function Site({ data, view = 'home', serverNow }) {
                         </blockquote>
                         <figcaption>
                           <strong>{r.initial}</strong>
-                          {r.branch ? ' · ' + r.branch : ''} · Google review
+                          {r.branch ? ', ' + r.branch : ''}
+                          <span className="visually-hidden"> (5 out of 5 stars)</span>
                         </figcaption>
                       </figure>
                     ))}

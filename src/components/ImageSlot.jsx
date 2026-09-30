@@ -47,33 +47,6 @@ function Clinic() {
   );
 }
 
-function Doctor() {
-  return (
-    <svg viewBox="0 0 140 175" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <defs>
-        <linearGradient id="is-d-bg" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#e6f1fb" />
-          <stop offset="1" stopColor="#b5d4f4" />
-        </linearGradient>
-      </defs>
-      <rect width="140" height="175" fill="url(#is-d-bg)" />
-      <circle cx="112" cy="30" r="26" fill="#fff" opacity="0.5" />
-      <path d="M14 175c0-34 22-52 56-52s56 18 56 52Z" fill="#fff" />
-      <path d="M52 124l18 30 18-30" fill="#378add" opacity="0.85" />
-      <path d="M58 122c4 8 8 12 12 12s8-4 12-12" fill="#f0c9a8" />
-      <rect x="62" y="102" width="16" height="22" rx="6" fill="#f0c9a8" />
-      <ellipse cx="70" cy="84" rx="24" ry="28" fill="#f7d6b8" />
-      <path d="M45 82c-4-30 14-40 28-38 16 2 26 14 22 38-4-12-10-20-24-22-14 0-22 8-26 22Z" fill="#042c53" />
-      <circle cx="61" cy="86" r="2.5" fill="#042c53" />
-      <circle cx="79" cy="86" r="2.5" fill="#042c53" />
-      <path d="M62 97c5 5 11 5 16 0" stroke="#b5654a" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-      <path d="M40 132c-4 10-4 26-2 43M100 132c4 10 4 26 2 43" stroke="#b5d4f4" strokeWidth="3" fill="none" />
-      <path d="M96 138c8 0 14 6 14 14" stroke="#0c447c" strokeWidth="3" strokeLinecap="round" fill="none" />
-      <circle cx="96" cy="138" r="3.5" fill="#0c447c" />
-    </svg>
-  );
-}
-
 function Smile({ after }) {
   const g = after ? ['#fff', '#b5d4f4'] : ['#f3e2a4', '#d9bd6a'];
   const xs = [60, 118, 176, 234, 292];
@@ -104,11 +77,19 @@ function Smile({ after }) {
   );
 }
 
-const ART = { clinic: Clinic, doctor: Doctor, before: () => <Smile />, after: () => <Smile after /> };
+const ART = { clinic: Clinic, before: () => <Smile />, after: () => <Smile after /> };
 
 export default function ImageSlot({ src, alt, placeholder, variant, className = '' }) {
   if (src) {
     return <img className={'image-slot image-slot--filled ' + className} src={src} alt={alt || placeholder || ''} loading="lazy" />;
+  }
+  if (variant === 'doctor') {
+    const initials = (alt || placeholder || '').replace(/^Dr\.?\s+/i, '').replace(/[\[\]]/g, '').split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join('');
+    return (
+      <div className={'image-slot image-slot--mono ' + className} role="img" aria-label={alt || placeholder}>
+        {initials}
+      </div>
+    );
   }
   const Art = ART[variant];
   if (Art) {

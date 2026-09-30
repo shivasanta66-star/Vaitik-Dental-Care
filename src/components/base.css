@@ -52,3 +52,8 @@ button, input, select, textarea { font: inherit; }
   background: rgba(4, 44, 83, 0.85); color: #fff; font: 600 12px/1.4 system-ui, sans-serif; letter-spacing: 0.04em;
 }
 .image-slot-tag--after { background: #378add; }
+
+.image-slot--mono {
+  display: grid; place-items: center; background: var(--blue-50); color: var(--navy-700);
+  font-family: var(--font-head); font-weight: 600; font-size: 44px; letter-spacing: 0.04em;
+}
