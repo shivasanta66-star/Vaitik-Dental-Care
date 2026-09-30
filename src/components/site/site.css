@@ -10,10 +10,7 @@
 h1, h2, h3 { letter-spacing: -0.01em; font-weight: 600; }
 
 html { scroll-behavior: smooth; }
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  * { transition: none !important; animation: none !important; }
-}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .spinner { animation-duration: 3s; } }
 body { background: var(--white); font-size: 16px; line-height: 1.6; }
 h1, h2, h3 { text-wrap: balance; }
 p { text-wrap: pretty; }
@@ -35,7 +32,6 @@ p { text-wrap: pretty; }
 .card {
   background: var(--white); border: 1px solid var(--blue-200); border-radius: var(--radius); padding: 24px;
 }
-.icon-blue { color: var(--blue-500); }
 
 /* ---------- buttons ---------- */
 .btn {
@@ -107,9 +103,9 @@ p { text-wrap: pretty; }
 .hero-facts span { margin: 0 6px; opacity: 0.6; }
 .hero-ctas { display: flex; flex-wrap: wrap; gap: 16px; }
 .hero-wa {
-  min-height: 52px; padding: 12px 28px; font-size: 16px; transition: transform 150ms;
+  min-height: 52px; padding: 12px 28px; font-size: 16px;
 }
-.hero-wa:hover { filter: none; transform: translateY(-1px); box-shadow: var(--shadow); }
+.hero-wa:hover { filter: none; }
 .hero-wa i { font-size: 22px; }
 .hero-book {
   min-height: 52px; padding: 8px 28px; font-size: 16px; background: transparent; color: var(--white); border: 2px solid var(--white);
@@ -365,9 +361,8 @@ select.input, input[type='date'].input { padding: 0 12px; }
 .fab {
   position: fixed; z-index: 55; right: 16px; bottom: 24px; width: 56px; height: 56px; border-radius: 14px; border: none;
   background: var(--whatsapp); color: var(--ink); font-size: 32px; display: grid; place-items: center; cursor: pointer;
-  box-shadow: var(--shadow); transition: transform 150ms;
+  box-shadow: var(--shadow);
 }
-.fab:hover { transform: scale(1.06); }
 .quick-bar {
   display: none;
   position: fixed; z-index: 54; left: 0; right: 0; bottom: 0; background: var(--navy-900);
@@ -394,10 +389,6 @@ select.input, input[type='date'].input { padding: 0 12px; }
   color: var(--white); font-weight: 600; cursor: pointer;
 }
 
-/* scroll reveal (set up in JS so content stays visible without it) */
-.reveal-pending { opacity: 0; transform: translateY(16px); transition: opacity 300ms ease-out, transform 300ms ease-out; }
-.reveal-pending.revealed { opacity: 1; transform: none; }
-
 /* Phone layout: bottom quick-action bar, and floating items sit above it. */
 @media (max-width: 899px) {
   .quick-bar { display: grid; }
@@ -406,7 +397,6 @@ select.input, input[type='date'].input { padding: 0 12px; }
 }
 
 /* ---------- small additions for the live booking form ---------- */
-.slot-loading { font-size: 14px; color: var(--muted); }
 .notice { border-radius: 8px; padding: 12px 16px; background: var(--blue-50); color: var(--ink); font-size: 14px; }
 .notice.is-error { background: #fbeae4; color: var(--danger); }
 
@@ -470,3 +460,6 @@ select.input, input[type='date'].input { padding: 0 12px; }
 }
 .emergency a { display: inline-flex; align-items: center; min-height: 44px; }
 .treat-book { min-height: 46px; }
+
+.doc-days { font-weight: 600; }
+.hero-copy { max-width: 720px; }

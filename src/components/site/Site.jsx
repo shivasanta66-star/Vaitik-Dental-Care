@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { branchView } from '@/lib/branch.js';
-import { FAQS, SITE } from '@/lib/content.js';
+import { FAQS, SITE, real, withoutPlaceholders } from '@/lib/content.js';
 import { clinicNow } from '@/lib/time.js';
 import ImageSlot from '../ImageSlot.jsx';
 import BookingSection, { HoursTable, useBooking } from './Booking.jsx';
@@ -28,29 +28,6 @@ function useClinicNow(serverNow) {
   return now;
 }
 
-// Fade sections in as they scroll into view. Sections already on screen are left alone.
-function useReveal() {
-  useEffect(() => {
-    if (reducedMotion() || !('IntersectionObserver' in window)) return;
-    const io = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((en) => {
-          if (en.isIntersecting) {
-            en.target.classList.add('revealed');
-            io.unobserve(en.target);
-          }
-        }),
-      { rootMargin: '0px 0px -40px 0px' },
-    );
-    document.querySelectorAll('[data-reveal]').forEach((el) => {
-      if (el.getBoundingClientRect().top < window.innerHeight) return;
-      el.classList.add('reveal-pending');
-      io.observe(el);
-    });
-    return () => io.disconnect();
-  }, []);
-}
-
 const REVIEW_PREVIEW_CHARS = 200;
 
 /** First ~200 characters of a review, cut at a word boundary. Full text stays on Google Maps. */
@@ -69,7 +46,6 @@ export default function Site({ data, view = 'home', serverNow }) {
   const [mapTab, setMapTab] = useState(data.branches[0]?.slug);
   const [lightbox, setLightbox] = useState(null);
   const lbClose = useRef(null);
-  useReveal();
 
   const branches = data.branches.map((b) => branchView(b, now));
   const mapB = branches.find((b) => b.slug === mapTab) || branches[0];
@@ -146,9 +122,6 @@ export default function Site({ data, view = 'home', serverNow }) {
             </button>
           </nav>
           <div className="nav-phone">
-            <button type="button" aria-label="Call the clinic" onClick={openCall} className="icon-btn">
-              <i className="ph-duotone ph-phone" />
-            </button>
             <button type="button" aria-label="Open menu" aria-expanded={menu} onClick={() => setMenu(!menu)} className="icon-btn">
               <i className={'ph-duotone ' + (menu ? 'ph-x' : 'ph-list')} />
             </button>
@@ -186,7 +159,8 @@ export default function Site({ data, view = 'home', serverNow }) {
                   <h1 id="hero-title">Gentle dental care in Koraput and Semiliguda, explained before we begin.</h1>
                   <p className="hero-lead">We check your teeth, show you the X-ray and give you the plan and cost in writing. Treatment starts only when you say yes.</p>
                   <p className="hero-facts">
-                    <strong>4.9 ★</strong> from 56 Google reviews at Koraput <span aria-hidden="true">/</span> open 7 days, till 9:30 PM
+                    <strong>{SITE.ratings.koraput.score} ★</strong> from {SITE.ratings.koraput.count} Google reviews at Koraput
+                    {branches[0] && <> <span aria-hidden="true">/</span> {branches[0].summary}</>}
                   </p>
                   <div className="hero-ctas">
                     <button type="button" onClick={openWa} className="btn btn-wa hero-wa">
@@ -198,19 +172,21 @@ export default function Site({ data, view = 'home', serverNow }) {
                     </button>
                   </div>
                 </div>
-                <div className="hero-photo">
-                  <ImageSlot variant="clinic" src={SITE.heroImage} alt="The treatment chair room at the Koraput clinic" placeholder="Photo: the treatment chair room at the Koraput clinic (real photo, WebP)" />
-                </div>
+                {SITE.heroImage && (
+                  <div className="hero-photo">
+                    <ImageSlot src={SITE.heroImage} alt="The treatment chair room at the Koraput clinic" />
+                  </div>
+                )}
               </div>
             </section>
 
-            <section id="branches" aria-labelledby="branches-title" data-reveal="" className="anchor">
+            <section id="branches" aria-labelledby="branches-title" className="anchor">
               <div className="wrap stack gap-24">
                 <div className="stack gap-8">
                   <h2 id="branches-title" className="h2">
                     Choose your nearest branch
                   </h2>
-                  <p className="muted">Same doctors, same care. Pick the one that is easier to reach.</p>
+                  <p className="muted">Pick the one that is easier to reach.</p>
                 </div>
                 <div className="grid branch-grid">
                   {branches.map((b) => (
@@ -234,7 +210,7 @@ export default function Site({ data, view = 'home', serverNow }) {
                       <p className="icon-line">
                         <i className="ph-duotone ph-clock" aria-hidden="true" />
                         <span>
-                          <strong style={{ fontWeight: 600 }}>Today ({b.dayName}):</strong> {b.todayHours}
+                          <strong>Today ({b.dayName}):</strong> {b.todayHours}
                         </span>
                       </p>
                       <div className="branch-actions">
@@ -257,15 +233,15 @@ export default function Site({ data, view = 'home', serverNow }) {
               </div>
             </section>
 
-            <section aria-label="Our promises" data-reveal="" className="promise-strip">
+            <section aria-label="Our promises" className="promise-strip">
               <ul className="promises">
-                {['Plan and cost explained before treatment', 'No unnecessary procedures', 'Sterilised instruments, single-use where possible', 'Evening and Sunday appointments'].map((text) => (
+                {['Plan and cost explained before treatment', 'No unnecessary procedures', 'Evening and Sunday appointments'].map((text) => (
                   <li key={text}>{text}</li>
                 ))}
               </ul>
             </section>
 
-            <section id="treatments" aria-labelledby="treat-title" data-reveal="" className="anchor">
+            <section id="treatments" aria-labelledby="treat-title" className="anchor">
               <div className="wrap stack gap-24">
                 <div className="split-head">
                   <h2 id="treat-title" className="h2">
@@ -278,7 +254,7 @@ export default function Site({ data, view = 'home', serverNow }) {
                     <li key={t.name} className="treat-row">
                       <h3 className="treat-name">{t.name}</h3>
                       <p className="treat-desc">{t.desc}</p>
-                      <p className="treat-price">{t.price}</p>
+                      <p className="treat-price">{real(t.price)}</p>
                       <button type="button" onClick={() => bookTreatment(t.name)} className="btn-link treat-book" aria-label={'Book ' + t.name}>
                         Book
                         <i className="ph-duotone ph-arrow-right" aria-hidden="true" />
@@ -289,7 +265,7 @@ export default function Site({ data, view = 'home', serverNow }) {
               </div>
             </section>
 
-            <section aria-labelledby="nervous-title" data-reveal="" className="tint">
+            <section aria-labelledby="nervous-title" className="tint">
               <div className="wrap stack gap-32">
                 <div className="stack gap-8 head-narrow">
                   <h2 id="nervous-title" className="h2">
@@ -317,7 +293,7 @@ export default function Site({ data, view = 'home', serverNow }) {
             </section>
 
             {data.doctors.length > 0 && (
-              <section id="doctors" aria-labelledby="doc-title" data-reveal="" className="anchor">
+              <section id="doctors" aria-labelledby="doc-title" className="anchor">
                 <div className="wrap stack gap-24">
                   <h2 id="doc-title" className="h2">
                     Your doctors
@@ -326,15 +302,13 @@ export default function Site({ data, view = 'home', serverNow }) {
                     {data.doctors.map((d) => (
                       <article key={d.id} className="card doc-card">
                         <div className="doc-photo">
-                          <ImageSlot variant="doctor" src={d.photo} alt={d.name} placeholder={'Photo: ' + d.name + ' at the clinic'} />
+                          <ImageSlot variant="doctor" src={d.photo} alt={d.name} placeholder={d.name} />
                         </div>
                         <div className="doc-body">
-                          <h3 className="h3">{d.name}</h3>
-                          <p className="small muted">{d.credentials}</p>
-                          <p className="small" style={{ fontWeight: 600 }}>
-                            {d.days}
-                          </p>
-                          <p>{d.focus}</p>
+                          <h3 className="h3">{withoutPlaceholders(d.name)}</h3>
+                          {real(d.credentials) && <p className="small muted">{d.credentials}</p>}
+                          {real(d.days) && <p className="small doc-days">{d.days}</p>}
+                          {real(d.focus) && <p>{d.focus}</p>}
                         </div>
                       </article>
                     ))}
@@ -344,7 +318,7 @@ export default function Site({ data, view = 'home', serverNow }) {
             )}
 
             {photos.length > 0 && (
-              <section aria-labelledby="gal-title" data-reveal="" className="tint">
+              <section aria-labelledby="gal-title" className="tint">
                 <div className="wrap stack gap-24">
                   <div className="stack gap-8">
                     <h2 id="gal-title" className="h2">
@@ -356,7 +330,7 @@ export default function Site({ data, view = 'home', serverNow }) {
                     {photos.map((g, i) => (
                       <figure key={g.id} className="gal-item">
                         <div className="gal-media">
-                          <ImageSlot variant={g.id.endsWith('-b') ? 'before' : 'after'} src={g.src} alt={g.alt} placeholder={g.alt} />
+                          <ImageSlot src={g.src} alt={g.alt} placeholder={g.alt} />
                           <button type="button" aria-label={'Enlarge ' + g.caption} onClick={() => setLightbox(i)} className="gal-zoom">
                             <i className="ph-duotone ph-arrows-out" />
                           </button>
@@ -370,14 +344,14 @@ export default function Site({ data, view = 'home', serverNow }) {
             )}
 
             {data.reviews.length > 0 && (
-              <section id="reviews" aria-labelledby="rev-title" data-reveal="" className="anchor">
+              <section id="reviews" aria-labelledby="rev-title" className="anchor">
                 <div className="wrap stack gap-24">
                   <div className="rev-head">
                     <div className="stack gap-8">
                       <h2 id="rev-title" className="h2">
                         What patients say
                       </h2>
-                      <p className="muted">All five-star Google reviews. Koraput 4.9 from 56, Semiliguda 5.0 from 7.</p>
+                      <p className="muted">A few from Google. Koraput rated {SITE.ratings.koraput.score} from {SITE.ratings.koraput.count} reviews, Semiliguda {SITE.ratings.semiliguda.score} from {SITE.ratings.semiliguda.count}.</p>
                     </div>
                     <div className="rev-links">
                       <a href={SITE.reviewsKoraput} target="_blank" rel="noopener">
@@ -411,7 +385,6 @@ export default function Site({ data, view = 'home', serverNow }) {
                         <figcaption>
                           <strong>{r.initial}</strong>
                           {r.branch ? ', ' + r.branch : ''}
-                          <span className="visually-hidden"> (5 out of 5 stars)</span>
                         </figcaption>
                       </figure>
                     ))}
@@ -426,13 +399,13 @@ export default function Site({ data, view = 'home', serverNow }) {
 
         {isHome && (
           <>
-            <section id="faq" aria-labelledby="faq-title" data-reveal="">
+            <section id="faq" aria-labelledby="faq-title">
               <div className="faq-wrap stack gap-24">
                 <h2 id="faq-title" className="h2">
                   Common questions
                 </h2>
                 <div>
-                  {FAQS.map((q, i) => {
+                  {FAQS.filter((q) => real(q.a)).map((q, i) => {
                     const open = faq === i;
                     return (
                       <div key={q.q} className="faq-item">
@@ -455,7 +428,7 @@ export default function Site({ data, view = 'home', serverNow }) {
             </section>
 
             {mapB && (
-              <section id="visit" aria-labelledby="visit-title" data-reveal="" className="tint anchor">
+              <section id="visit" aria-labelledby="visit-title" className="tint anchor">
                 <div className="wrap stack gap-24">
                   <h2 id="visit-title" className="h2">
                     Map and hours
@@ -482,8 +455,8 @@ export default function Site({ data, view = 'home', serverNow }) {
                     </div>
                     <div className="map-info">
                       <p style={{ fontWeight: 600 }}>{mapB.addr}</p>
-                      <p style={{ fontSize: 15 }}>
-                        <strong style={{ fontWeight: 600 }}>How to find us:</strong> {mapB.landmark}
+                      <p className="small">
+                        <strong>How to find us:</strong> {withoutPlaceholders(mapB.landmark)}
                       </p>
                       <HoursTable caption="Weekly hours" week={mapB.week} />
                       <a href={mapB.dirHref} target="_blank" rel="noopener" className="btn btn-outline">
@@ -553,7 +526,7 @@ export default function Site({ data, view = 'home', serverNow }) {
       {lbItem && (
         <div role="dialog" aria-modal="true" aria-label={lbItem.caption} onClick={() => setLightbox(null)} className="lightbox">
           <div onClick={(e) => e.stopPropagation()} className="lightbox-media">
-            <ImageSlot variant={lbItem.id.endsWith('-b') ? 'before' : 'after'} src={lbItem.src} alt={lbItem.alt} placeholder={lbItem.alt} />
+            <ImageSlot src={lbItem.src} alt={lbItem.alt} placeholder={lbItem.alt} />
           </div>
           <p>{lbItem.caption} · shown with patient consent</p>
           <button type="button" ref={lbClose} onClick={() => setLightbox(null)}>
@@ -568,7 +541,7 @@ export default function Site({ data, view = 'home', serverNow }) {
 export function SiteFooter({ branches, emergencyNumber }) {
   return (
     <footer className="site-footer">
-      {emergencyNumber && (
+      {real(emergencyNumber) && (
         <div className="emergency">
           <p>
             <i className="ph-duotone ph-first-aid" aria-hidden="true" />
@@ -582,11 +555,9 @@ export function SiteFooter({ branches, emergencyNumber }) {
             <span className="logo-word">VAITIK</span>
             <span className="logo-sub">dental care</span>
           </p>
-          <p className="footer-muted">Gentle, clearly explained dental care. Est. {SITE.established}.</p>
+          <p className="footer-muted">Gentle, clearly explained dental care.{real(SITE.established) && ' Since ' + SITE.established + '.'}</p>
           <div className="footer-links">
-            <a href={SITE.facebook}>Facebook</a>
-            <a href={SITE.instagram}>Instagram</a>
-            <a href={SITE.youtube}>YouTube</a>
+            {[['Facebook', SITE.facebook], ['Instagram', SITE.instagram], ['YouTube', SITE.youtube]].map(([label, href]) => real(href) && <a key={label} href={href}>{label}</a>)}
           </div>
         </div>
         {branches.map((b) => (
