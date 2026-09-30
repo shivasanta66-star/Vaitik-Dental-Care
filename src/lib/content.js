@@ -11,7 +11,7 @@ export const SITE = {
   instagram: '[INSTAGRAM LINK]',
   youtube: '[YOUTUBE LINK]',
   reviewsKoraput: '[KORAPUT REVIEWS LINK]',
-  reviewsSemiliguda: '[SEMILIGUDA REVIEWS LINK]',
+  reviewsSemiliguda: 'https://maps.app.goo.gl/3uNzFLx3curaQ5u29',
   // Shown on the privacy policy page.
   privacyEmail: '[CLINIC EMAIL]',
   grievanceOfficer: '[NAME OF PERSON RESPONSIBLE FOR DATA REQUESTS]',
