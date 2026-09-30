@@ -60,9 +60,9 @@ select v.name, v.qualification, v.reg_no, v.schedule_text, v.focus,
 insert into public.reviews (author_initial, text, branch_id, sort)
 select v.initial, v.text, (select id from public.branches where slug = v.branch), v.sort
   from (values
-    ('[A.]', '[Paraphrase of a Google review — e.g. about a root canal and how it was explained]', 'koraput', 1),
-    ('[S.]', '[Paraphrase of a Google review — e.g. about bringing a child for a check-up]', 'koraput', 2),
-    ('[P.]', '[Paraphrase of a Google review — e.g. about an evening appointment after work]', 'semiliguda', 3),
-    ('[R.]', '[Paraphrase of a Google review — e.g. about cost being told upfront]', 'koraput', 4)
+    ('Beena Sarkar', 'If you r looking for the best dental care treatment visit Vaitik dental clinic in semiliguda.Dr.vaishali mam is not only incredibly sweet in her manner and behaviour but her treatment is even better.she performance painless root canal treatment and extractions without you feeling any pain at all.my advice is to definitely visit Vaitik Dental care at least once...thank you so much vaishali ma''am and kartik sir ...', 'semiliguda', 1),
+    ('suchi suchitra', 'I visited vaitik dental care with severe pain and swelling. Dr. Vaishali treatment me with outmost care and explained me everything clearly regarding the procedure.... The treatment was smooth and painless... I highly recommend', 'semiliguda', 2),
+    ('Erwin Bara', 'Painless extraction. Amazing doctor. All the facilities available.', 'semiliguda', 3),
+    ('Dr Abhijit', 'Excellent dental care and very professional doctor. Highly recommended!', 'semiliguda', 4)
   ) as v(initial, text, branch, sort)
  where not exists (select 1 from public.reviews);
