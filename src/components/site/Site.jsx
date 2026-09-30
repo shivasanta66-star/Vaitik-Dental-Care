@@ -50,6 +50,14 @@ function useReveal() {
   }, []);
 }
 
+const REVIEW_PREVIEW_CHARS = 200;
+
+/** First ~200 characters of a review, cut at a word boundary. Full text stays on Google Maps. */
+function preview(text) {
+  if (text.length <= REVIEW_PREVIEW_CHARS) return text;
+  return text.slice(0, REVIEW_PREVIEW_CHARS).replace(/\s+\S*$/, '').replace(/[\s,.;:-]+$/, '') + '… ';
+}
+
 export default function Site({ data, view = 'home', serverNow }) {
   const isHome = view === 'home';
   const now = useClinicNow(serverNow);
@@ -404,7 +412,23 @@ export default function Site({ data, view = 'home', serverNow }) {
                         <p aria-label="5 out of 5 stars" className="stars">
                           ★★★★★
                         </p>
-                        <blockquote>{r.text}</blockquote>
+                        <blockquote>
+                          {preview(r.text)}
+                          {r.text.length > REVIEW_PREVIEW_CHARS && (
+                            <>
+                              {' '}
+                              <a
+                                className="rev-more"
+                                href={r.branch === 'Semiliguda' ? SITE.reviewsSemiliguda : SITE.reviewsKoraput}
+                                target="_blank"
+                                rel="noopener"
+                                aria-label={'Read the full review by ' + r.initial + ' on Google Maps'}
+                              >
+                                Read more
+                              </a>
+                            </>
+                          )}
+                        </blockquote>
                         <figcaption>
                           <strong>{r.initial}</strong>
                           {r.branch ? ' · ' + r.branch : ''} · Google review

@@ -178,6 +178,8 @@ p { text-wrap: pretty; }
 .rev-card { margin: 0; background: var(--blue-50); border-radius: var(--radius); padding: 24px; display: flex; flex-direction: column; gap: 12px; }
 .stars { color: var(--navy-700); letter-spacing: 2px; font-size: 18px; }
 .rev-card blockquote { margin: 0; flex: 1; }
+.rev-card blockquote .rev-more { color: #0b5cc7; font-weight: 600; white-space: nowrap; }
+.rev-card blockquote .rev-more:hover { color: #084a9f; text-decoration: underline; }
 .rev-card figcaption { font-size: 14px; color: var(--muted); }
 .rev-card figcaption strong { color: var(--ink); }
 
