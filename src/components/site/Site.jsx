@@ -27,23 +27,6 @@ function useClinicNow(serverNow) {
   return now;
 }
 
-// Hide the header when scrolling down, show it when scrolling up.
-function useHideOnScroll() {
-  const [hidden, setHidden] = useState(false);
-  useEffect(() => {
-    let lastY = window.scrollY;
-    const onScroll = () => {
-      const y = window.scrollY;
-      if (y > lastY + 4 && y > 160) setHidden(true);
-      else if (y < lastY - 4 || y < 160) setHidden(false);
-      lastY = y;
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-  return hidden;
-}
-
 // Fade sections in as they scroll into view. Sections already on screen are left alone.
 function useReveal() {
   useEffect(() => {
@@ -70,7 +53,6 @@ function useReveal() {
 export default function Site({ data, view = 'home', serverNow }) {
   const isHome = view === 'home';
   const now = useClinicNow(serverNow);
-  const headerHidden = useHideOnScroll();
   const booking = useBooking(data.settings);
   const [menu, setMenu] = useState(false);
   const [chooser, setChooser] = useState(null); // 'wa' | 'call' | null
@@ -137,7 +119,7 @@ export default function Site({ data, view = 'home', serverNow }) {
 
   return (
     <>
-      <header className={'site-header' + (headerHidden && !menu ? ' is-hidden' : '')}>
+      <header className="site-header">
         <div className="header-bar">
           <a href={isHome ? '#top' : '/'} aria-label="Vaitik Dental Care home" className="logo">
             <span className="logo-word">VAITIK</span>
@@ -147,6 +129,8 @@ export default function Site({ data, view = 'home', serverNow }) {
             <a href={home + '#treatments'}>Treatments</a>
             <a href={home + '#doctors'}>Doctors</a>
             <a href={home + '#branches'}>Branches</a>
+            <a href={home + '#reviews'}>Reviews</a>
+            <a href={home + '#visit'}>Visit us</a>
             <button type="button" onClick={goBook} className="nav-book">
               Book<span className="odia">ବୁକ୍ କରନ୍ତୁ</span>
             </button>
@@ -166,7 +150,8 @@ export default function Site({ data, view = 'home', serverNow }) {
               ['#treatments', 'Treatments'],
               ['#doctors', 'Doctors'],
               ['#branches', 'Branches'],
-              ['#visit', 'Map and hours'],
+              ['#reviews', 'Reviews'],
+              ['#visit', 'Visit us · map and hours'],
             ].map(([href, label]) => (
               <a key={href} href={home + href} onClick={() => setMenu(false)}>
                 {label}
@@ -395,7 +380,7 @@ export default function Site({ data, view = 'home', serverNow }) {
             )}
 
             {data.reviews.length > 0 && (
-              <section aria-labelledby="rev-title" data-reveal="">
+              <section id="reviews" aria-labelledby="rev-title" data-reveal="" className="anchor">
                 <div className="wrap stack gap-24">
                   <div className="rev-head">
                     <div className="stack gap-8">
