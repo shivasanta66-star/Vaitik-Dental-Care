@@ -47,10 +47,12 @@ export function hoursSummary(hours) {
 }
 
 // Everything the UI shows about a branch at a given moment.
-// Exact Google Maps listing embeds, by branch slug. Branches not listed fall back to a pin at their coordinates.
+// Exact Google Maps listing embeds, by branch slug. Any branch without an entry falls back to a pin at its coordinates.
 const MAP_EMBEDS = {
   koraput:
     'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3658.6423635032243!2d82.7073856750575!3d18.81316228233802!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a3af1e42ab9adbf%3A0x6cefb1edd3842294!2sVaitik%20dental%20care!5e1!3m2!1sen!2sin!4v1790734666089!5m2!1sen!2sin',
+  semiliguda:
+    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3661.0148115967286!2d82.85445117505475!3d18.703800382425616!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a3aff4b4c17fea5%3A0xccc285baa13d54e3!2sVaitik%20dental%20care%2C%20branch%202!5e1!3m2!1sen!2sin!4v1790735264288!5m2!1sen!2sin',
 };
 
 export function branchView(b, now = clinicNow()) {
