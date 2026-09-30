@@ -10,7 +10,7 @@ export const SITE = {
   facebook: '[FACEBOOK LINK]',
   instagram: '[INSTAGRAM LINK]',
   youtube: '[YOUTUBE LINK]',
-  reviewsKoraput: '[KORAPUT REVIEWS LINK]',
+  reviewsKoraput: 'https://maps.app.goo.gl/un9H1U9F6WPHQBRL9',
   reviewsSemiliguda: 'https://maps.app.goo.gl/3uNzFLx3curaQ5u29',
   // Shown on the privacy policy page.
   privacyEmail: '[CLINIC EMAIL]',
