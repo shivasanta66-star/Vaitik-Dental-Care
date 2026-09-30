@@ -60,9 +60,24 @@ select v.name, v.qualification, v.reg_no, v.schedule_text, v.focus,
 insert into public.reviews (author_initial, text, branch_id, sort)
 select v.initial, v.text, (select id from public.branches where slug = v.branch), v.sort
   from (values
-    ('Beena Sarkar', 'If you r looking for the best dental care treatment visit Vaitik dental clinic in semiliguda.Dr.vaishali mam is not only incredibly sweet in her manner and behaviour but her treatment is even better.she performance painless root canal treatment and extractions without you feeling any pain at all.my advice is to definitely visit Vaitik Dental care at least once...thank you so much vaishali ma''am and kartik sir ...', 'semiliguda', 1),
-    ('suchi suchitra', 'I visited vaitik dental care with severe pain and swelling. Dr. Vaishali treatment me with outmost care and explained me everything clearly regarding the procedure.... The treatment was smooth and painless... I highly recommend', 'semiliguda', 2),
-    ('Erwin Bara', 'Painless extraction. Amazing doctor. All the facilities available.', 'semiliguda', 3),
-    ('Dr Abhijit', 'Excellent dental care and very professional doctor. Highly recommended!', 'semiliguda', 4)
+    ('Nirmala G', 'The clinic is hygienic ,clean with patient friendly environment. The dentist Ch Kartik sir was  gentle & highly professional, explain everything clearly, and don''t push unnecessary treatments."The doctor & staff of this clinic behave politely with patients.They use modern techniques that make the treatment much faster.The doctors confident & motivation act like a shield against fear.
+
+HIGHLY  RECOMMENDED
+Thank you', 'koraput', 1),
+    ('K Deepak Choudhury', 'My mother had a very complex dental condition when we first visited the clinic. She only had 7 teeth in the upper jaw and 2 teeth  in the lower jaw. The doctors, Ch Kartik and Dr Vaishali carefully planned her treatment, which included root canal procedures, a surgery, teeth extractions and other dental work and provided the best treatment as per her age and her bone health.
+
+Throughout the entire process, they along with their staff were too friendly, patient and supportive and handled with extreme care and hygiene. They explained every step clearly and made sure my mother was comfortable during the treatment.
+
+Today, the results are truly amazing. My mother can smile and eat properly again after a long time. Thank you so much Kartik bro and Vaishali bhabi.
+
+I highly recommend Vaitik clinic to anyone looking for high quality dental treatment in and around Koraput and Semiliguda.', 'koraput', 2),
+    ('Niharika Panda', 'Finally after long queries and search... I found the perfect dental clinic in Koraput recomended by one of my friend who is also a dentist. I recently went there for my dental treatment and had the best experience. Not only it was the professional behaviour but also the transperency which was their benchmark. Before starting the treatment they explained about my issues followed by a proper treatment plan along with the cost of treatment which was quite affordable. Although I was worried about the procedure which is usually very painful, but thanks to the doctors for their exquisite hand work.Thank You Dr. Ch. Kartik , Dr. Vaishali Shukla, owners of Vaitik Dental Care and to their assistant Ritu for helping me throughout my treatment. I will recomend others to visit the clinic for any dental related issues.', 'koraput', 3),
+    ('Sumit Turuk', 'recently visited Vatika Dendral Clinic, and my experience was excellent from start to finish. The staff were very professional, friendly, and attentive, making me feel comfortable , The specialists took the time to carefully understand my problem and  provided me a detailed consultation before suggesting treatment.The treatment itself was effective and done with great care. You most visit Vaitik Dental Care', 'koraput', 4),
+    ('Barsha Behera', 'I''ve had the best experience so far, Dr Kartik is one of the most professional dentist, I got my braces and within 3 months of time I got amazing results. Highly recommend 😍 ...', 'koraput', 5),
+    ('Jalandhar Sahu', 'Treatment is outstanding with modern tools and equipments with nice behaviour and clear explanation .Everything is best 😍 .', 'koraput', 6),
+    ('Beena Sarkar', 'If you r looking for the best dental care treatment visit Vaitik dental clinic in semiliguda.Dr.vaishali mam is not only incredibly sweet in her manner and behaviour but her treatment is even better.she performance painless root canal treatment and extractions without you feeling any pain at all.my advice is to definitely visit Vaitik Dental care at least once...thank you so much vaishali ma''am and kartik sir ...', 'semiliguda', 7),
+    ('suchi suchitra', 'I visited vaitik dental care with severe pain and swelling. Dr. Vaishali treatment me with outmost care and explained me everything clearly regarding the procedure.... The treatment was smooth and painless... I highly recommend', 'semiliguda', 8),
+    ('Erwin Bara', 'Painless extraction. Amazing doctor. All the facilities available.', 'semiliguda', 9),
+    ('Dr Abhijit', 'Excellent dental care and very professional doctor. Highly recommended!', 'semiliguda', 10)
   ) as v(initial, text, branch, sort)
  where not exists (select 1 from public.reviews);
