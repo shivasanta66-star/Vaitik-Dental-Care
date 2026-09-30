@@ -12,7 +12,8 @@ const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)'
 function scrollToId(id) {
   const el = document.getElementById(id);
   if (!el) return;
-  window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 8, behavior: reducedMotion() ? 'auto' : 'smooth' });
+  // 64px sticky header plus a little air, so the section title is never hidden behind it.
+  window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 72, behavior: reducedMotion() ? 'auto' : 'smooth' });
 }
 
 // Clinic time, refreshed every minute so "Open now" badges stay correct.
