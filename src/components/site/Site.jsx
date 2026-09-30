@@ -198,7 +198,7 @@ export default function Site({ data, view = 'home', serverNow }) {
                   </div>
                 </div>
                 <div className="hero-photo">
-                  <ImageSlot src={SITE.heroImage} alt="The treatment chair room at the Koraput clinic" placeholder="Photo: the treatment chair room at the Koraput clinic (real photo, WebP)" />
+                  <ImageSlot variant="clinic" src={SITE.heroImage} alt="The treatment chair room at the Koraput clinic" placeholder="Photo: the treatment chair room at the Koraput clinic (real photo, WebP)" />
                 </div>
               </div>
             </section>
@@ -336,7 +336,7 @@ export default function Site({ data, view = 'home', serverNow }) {
                     {data.doctors.map((d) => (
                       <article key={d.id} className="card doc-card">
                         <div className="doc-photo">
-                          <ImageSlot src={d.photo} alt={d.name} placeholder={'Photo: ' + d.name + ' at the clinic'} />
+                          <ImageSlot variant="doctor" src={d.photo} alt={d.name} placeholder={'Photo: ' + d.name + ' at the clinic'} />
                         </div>
                         <div className="doc-body">
                           <h3 className="h3">{d.name}</h3>
@@ -366,7 +366,7 @@ export default function Site({ data, view = 'home', serverNow }) {
                     {photos.map((g, i) => (
                       <figure key={g.id} className="gal-item">
                         <div className="gal-media">
-                          <ImageSlot src={g.src} alt={g.alt} placeholder={g.alt} />
+                          <ImageSlot variant={g.id.endsWith('-b') ? 'before' : 'after'} src={g.src} alt={g.alt} placeholder={g.alt} />
                           <button type="button" aria-label={'Enlarge ' + g.caption} onClick={() => setLightbox(i)} className="gal-zoom">
                             <i className="ph-duotone ph-arrows-out" />
                           </button>
@@ -548,7 +548,7 @@ export default function Site({ data, view = 'home', serverNow }) {
       {lbItem && (
         <div role="dialog" aria-modal="true" aria-label={lbItem.caption} onClick={() => setLightbox(null)} className="lightbox">
           <div onClick={(e) => e.stopPropagation()} className="lightbox-media">
-            <ImageSlot src={lbItem.src} alt={lbItem.alt} placeholder={lbItem.alt} />
+            <ImageSlot variant={lbItem.id.endsWith('-b') ? 'before' : 'after'} src={lbItem.src} alt={lbItem.alt} placeholder={lbItem.alt} />
           </div>
           <p>{lbItem.caption} · shown with patient consent</p>
           <button type="button" ref={lbClose} onClick={() => setLightbox(null)}>
