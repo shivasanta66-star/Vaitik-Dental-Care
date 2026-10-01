@@ -9,7 +9,7 @@
 }
 h1, h2, h3 { letter-spacing: -0.01em; font-weight: 600; }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; scroll-padding-bottom: 88px; -webkit-text-size-adjust: 100%; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .spinner { animation-duration: 3s; } }
 body { background: var(--white); font-size: 16px; line-height: 1.6; }
 h1, h2, h3 { text-wrap: balance; }
@@ -449,6 +449,16 @@ select.input, input[type='date'].input { padding: 0 12px; }
   .map-frame, .map-frame iframe { min-height: 280px; }
   .map-info { padding: 20px; }
   .emergency p { flex-wrap: wrap; row-gap: 4px; }
+
+  /* Plain wrapping avoids short, ragged lines at narrow widths. */
+  p, .faq-q, .treat-name { text-wrap: wrap; }
+  .footer-bottom { flex-direction: column; gap: 4px; }
+  .footer-bottom div { flex-wrap: wrap; }
+  .field-error, .notice { overflow-wrap: anywhere; }
+  .summary { grid-template-columns: 1fr; gap: 0; padding: 16px; }
+  .summary dd { margin-bottom: 8px; }
+  .quick-bar { gap: 6px; padding-inline: 6px; }
+  .quick-bar button { padding-inline: 4px; font-size: 15px; }
 
   /* Bottom sheet for the Call / WhatsApp branch chooser, sitting just above the quick bar. */
   .chooser { left: 16px; right: 16px; width: auto; bottom: 76px; }
