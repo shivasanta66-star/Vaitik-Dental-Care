@@ -1,4 +1,5 @@
 import '@phosphor-icons/web/duotone';
+import '@phosphor-icons/web/regular';
 
 export const metadata = {
   metadataBase: new URL(process.env.URL || 'http://localhost:3000'),

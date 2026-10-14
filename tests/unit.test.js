@@ -13,15 +13,15 @@ const SEMILIGUDA = { hours: [0, 1, 2, 3, 4, 5, 6].map((d) => (d === 0 ? [1020, 1
 test('clinic time is India time whatever the server timezone', () => {
   // 18:40 UTC on Tue 29 Sep = 00:10 IST on Wed 30 Sep
   assert.deepEqual(clinicNow(new Date('2026-09-29T18:40:00Z')), { ymd: '2026-09-30', weekday: 3, minutes: 10 });
-  assert.equal(fmt(1290), '9:30 PM');
-  assert.equal(fmt(0), '12:00 AM');
+  assert.equal(fmt(1290), '9:30\u00a0PM');
+  assert.equal(fmt(0), '12:00\u00a0AM');
   assert.equal(dLabel('2026-10-04'), 'Sun, 4 Oct');
   assert.equal(addDaysYmd('2026-12-31', 1), '2027-01-01');
   assert.ok(isYmd('2026-02-28'));
   assert.ok(!isYmd('2026-02-30'));
 });
 
-test('Sunday hours at Semiliguda give 5:00–8:00 PM slots', () => {
+test('Sunday hours at Semiliguda give 5:00–8:00\u00a0PM slots', () => {
   const now = { ymd: '2026-10-01', weekday: 4, minutes: 600 };
   const r = computeSlots({ date: '2026-10-04', hours: { opens: '17:00', closes: '20:30', slot_minutes: 30 }, now });
   assert.equal(r.closed, null);
@@ -50,19 +50,19 @@ test('closed, blocked, past and far-future dates have no slots', () => {
 });
 
 test('hours summaries', () => {
-  assert.equal(hoursSummary(KORAPUT.hours), 'Every day, 9:00 AM – 9:30 PM');
-  assert.equal(hoursSummary(SEMILIGUDA.hours), 'Mon–Sat 10:00 AM – 8:30 PM · Sun 5:00 PM – 8:30 PM');
+  assert.equal(hoursSummary(KORAPUT.hours), 'Every day, 9:00\u00a0AM\u00a0– 9:30\u00a0PM');
+  assert.equal(hoursSummary(SEMILIGUDA.hours), 'Mon–Sat 10:00\u00a0AM\u00a0– 8:30\u00a0PM · Sun 5:00\u00a0PM\u00a0– 8:30\u00a0PM');
 });
 
 test('open / closed badge', () => {
   const tue = (minutes) => ({ ymd: '2026-09-29', weekday: 2, minutes });
-  assert.deepEqual(branchStatus(KORAPUT, tue(500)), { open: false, label: 'Opens at 9:00 AM' });
-  assert.deepEqual(branchStatus(KORAPUT, tue(600)), { open: true, label: 'Open now · till 9:30 PM' });
-  assert.deepEqual(branchStatus(KORAPUT, tue(1300)), { open: false, label: 'Opens tomorrow 9:00 AM' });
+  assert.deepEqual(branchStatus(KORAPUT, tue(500)), { open: false, label: 'Opens at 9:00\u00a0AM' });
+  assert.deepEqual(branchStatus(KORAPUT, tue(600)), { open: true, label: 'Open now · till 9:30\u00a0PM' });
+  assert.deepEqual(branchStatus(KORAPUT, tue(1300)), { open: false, label: 'Opens tomorrow 9:00\u00a0AM' });
   // Saturday night at Semiliguda → opens Sunday evening
-  assert.equal(branchStatus(SEMILIGUDA, { ymd: '2026-10-03', weekday: 6, minutes: 1250 }).label, 'Opens tomorrow 5:00 PM');
+  assert.equal(branchStatus(SEMILIGUDA, { ymd: '2026-10-03', weekday: 6, minutes: 1250 }).label, 'Opens tomorrow 5:00\u00a0PM');
   const holiday = { ...KORAPUT, blocked: { '2026-09-29': 'Diwali' } };
-  assert.equal(branchStatus(holiday, tue(600)).label, 'Closed today · Opens tomorrow 9:00 AM');
+  assert.equal(branchStatus(holiday, tue(600)).label, 'Closed today · Opens tomorrow 9:00\u00a0AM');
 });
 
 test('question form validation', () => {

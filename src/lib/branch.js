@@ -31,7 +31,7 @@ export function branchStatus(b, now) {
   return { open: false, label: next ? prefix + 'Opens ' + next.when + ' ' + fmt(next.at) : 'Closed' };
 }
 
-const rangeText = (h) => (h ? fmt(h[0]) + ' – ' + fmt(h[1]) : 'Closed');
+const rangeText = (h) => (h ? fmt(h[0]) + '\u00a0– ' + fmt(h[1]) : 'Closed');
 
 // "Every day, 9:00 AM – 9:30 PM" or "Mon–Sat 10:00 AM – 8:30 PM · Sun 5:00 PM – 8:30 PM"
 export function hoursSummary(hours) {

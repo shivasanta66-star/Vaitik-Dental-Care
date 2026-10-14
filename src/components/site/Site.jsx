@@ -133,7 +133,7 @@ export default function Site({ data, view = 'home', serverNow }) {
               Book Appointment
             </BookLink>
             <button type="button" aria-label="Open menu" aria-expanded={menu} onClick={() => setMenu(!menu)} className="icon-btn">
-              <i className={'ph-duotone ' + (menu ? 'ph-x' : 'ph-list')} />
+              <i className={'ph ' + (menu ? 'ph-x' : 'ph-list')} />
             </button>
           </div>
         </div>
@@ -180,7 +180,7 @@ export default function Site({ data, view = 'home', serverNow }) {
                       Book Appointment<span className="odia">ଆପଏଣ୍ଟମେଣ୍ଟ ବୁକ୍ କରନ୍ତୁ</span>
                     </BookLink>
                     <button type="button" onClick={openWa} className="btn btn-wa hero-wa">
-                      <i className="ph-duotone ph-whatsapp-logo" />
+                      <i className="ph ph-whatsapp-logo" />
                       WhatsApp us
                     </button>
                   </div>
@@ -217,26 +217,26 @@ export default function Site({ data, view = 'home', serverNow }) {
                         </span>
                       </div>
                       <p className="icon-line">
-                        <i className="ph-duotone ph-map-pin" aria-hidden="true" />
+                        <i className="ph ph-map-pin" aria-hidden="true" />
                         <span>{b.addr}</span>
                       </p>
                       <p className="icon-line">
-                        <i className="ph-duotone ph-clock" aria-hidden="true" />
+                        <i className="ph ph-clock" aria-hidden="true" />
                         <span>
                           <strong>Today ({b.dayName}):</strong> {b.todayHours}
                         </span>
                       </p>
                       <div className="branch-actions">
                         <a href={b.telHref} className="btn btn-outline">
-                          <i className="ph-duotone ph-phone" aria-hidden="true" />
+                          <i className="ph ph-phone" aria-hidden="true" />
                           Call
                         </a>
                         <a href={b.waHref} target="_blank" rel="noopener" className="btn btn-wa">
-                          <i className="ph-duotone ph-whatsapp-logo" aria-hidden="true" />
+                          <i className="ph ph-whatsapp-logo" aria-hidden="true" />
                           WhatsApp
                         </a>
                         <a href={b.dirHref} target="_blank" rel="noopener" className="btn btn-outline">
-                          <i className="ph-duotone ph-navigation-arrow" aria-hidden="true" />
+                          <i className="ph ph-navigation-arrow" aria-hidden="true" />
                           Directions
                         </a>
                       </div>
@@ -271,7 +271,7 @@ export default function Site({ data, view = 'home', serverNow }) {
                       <BookLink className="btn-link treat-book">
                         Book
                         <span className="visually-hidden"> {t.name} (opens in a new tab)</span>
-                        <i className="ph-duotone ph-arrow-right" aria-hidden="true" />
+                        <i className="ph ph-arrow-right" aria-hidden="true" />
                       </BookLink>
                     </li>
                   ))}
@@ -296,7 +296,7 @@ export default function Site({ data, view = 'home', serverNow }) {
                   ].map(([title, text], i) => (
                     <li key={title}>
                       <span aria-hidden="true" className="step-num">
-                        {String(i + 1).padStart(2, '0')}
+                        {i + 1}
                       </span>
                       <h3 className="h3">{title}</h3>
                       <p>{text}</p>
@@ -315,9 +315,11 @@ export default function Site({ data, view = 'home', serverNow }) {
                   <div className="grid doc-grid">
                     {data.doctors.map((d) => (
                       <article key={d.id} className="card doc-card">
-                        <div className="doc-photo">
-                          <ImageSlot variant="doctor" src={d.photo} alt={d.name} placeholder={d.name} />
-                        </div>
+                        {d.photo && (
+                          <div className="doc-photo">
+                            <ImageSlot src={d.photo} alt={d.name} />
+                          </div>
+                        )}
                         <div className="doc-body">
                           <h3 className="h3">{withoutPlaceholders(d.name)}</h3>
                           {real(d.credentials) && <p className="small muted">{d.credentials}</p>}
@@ -346,7 +348,7 @@ export default function Site({ data, view = 'home', serverNow }) {
                         <div className="gal-media">
                           <ImageSlot src={g.src} alt={g.alt} placeholder={g.alt} />
                           <button type="button" aria-label={'Enlarge ' + g.caption} onClick={() => setLightbox(i)} className="gal-zoom">
-                            <i className="ph-duotone ph-arrows-out" />
+                            <i className="ph ph-arrows-out" />
                           </button>
                         </div>
                         <figcaption>{g.caption}</figcaption>
@@ -389,7 +391,7 @@ export default function Site({ data, view = 'home', serverNow }) {
                             <span className="rev-name">
                               <strong>{r.initial}</strong>
                               <span className="rev-source">
-                                <i className="ph-duotone ph-google-logo" aria-hidden="true" />
+                                <i className="ph ph-google-logo" aria-hidden="true" />
                                 Google review{r.branch ? ' · ' + r.branch : ''}
                               </span>
                             </span>
@@ -445,7 +447,7 @@ export default function Site({ data, view = 'home', serverNow }) {
                         <h3>
                           <button type="button" id={'faq-b' + i} aria-expanded={open} aria-controls={'faq-p' + i} onClick={() => setFaq(open ? -1 : i)} className="faq-q">
                             {q.q}
-                            <i className={'ph-duotone ' + (open ? 'ph-minus' : 'ph-plus')} aria-hidden="true" />
+                            <i className={'ph ' + (open ? 'ph-minus' : 'ph-plus')} aria-hidden="true" />
                           </button>
                         </h3>
                         {open && (
@@ -493,7 +495,7 @@ export default function Site({ data, view = 'home', serverNow }) {
                       </p>
                       <HoursTable caption="Weekly hours" week={mapB.week} />
                       <a href={mapB.dirHref} target="_blank" rel="noopener" className="btn btn-outline">
-                        <i className="ph-duotone ph-navigation-arrow" aria-hidden="true" />
+                        <i className="ph ph-navigation-arrow" aria-hidden="true" />
                         Open in Google Maps
                       </a>
                     </div>
@@ -516,14 +518,14 @@ export default function Site({ data, view = 'home', serverNow }) {
                 Which branch?
               </p>
               <button type="button" aria-label="Close" onClick={() => setChooser(null)} className="chooser-close">
-                <i className="ph-duotone ph-x" />
+                <i className="ph ph-x" />
               </button>
             </div>
             {branches.map((b) => {
               const call = chooser === 'call';
               return (
                 <a key={b.slug} href={call ? b.telHref : b.waHref} target={call ? '_self' : '_blank'} rel="noopener" onClick={() => setChooser(null)} className={'chooser-item' + (call ? '' : ' is-wa')}>
-                  <i className={'ph-duotone ' + (call ? 'ph-phone' : 'ph-whatsapp-logo')} aria-hidden="true" />
+                  <i className={'ph ' + (call ? 'ph-phone' : 'ph-whatsapp-logo')} aria-hidden="true" />
                   <span>
                     <strong>
                       {b.name} <span className="odia">{b.odia}</span>
@@ -538,20 +540,20 @@ export default function Site({ data, view = 'home', serverNow }) {
       )}
 
       <button type="button" aria-label="WhatsApp us" onClick={openWa} className="fab">
-        <i className="ph-duotone ph-whatsapp-logo" />
+        <i className="ph ph-whatsapp-logo" />
       </button>
 
       <nav aria-label="Quick actions" className="quick-bar">
         <button type="button" onClick={openCall} className="quick-call">
-          <i className="ph-duotone ph-phone" aria-hidden="true" />
+          <i className="ph ph-phone" aria-hidden="true" />
           Call
         </button>
         <button type="button" onClick={openWa} className="quick-wa">
-          <i className="ph-duotone ph-whatsapp-logo" aria-hidden="true" />
+          <i className="ph ph-whatsapp-logo" aria-hidden="true" />
           WhatsApp
         </button>
         <BookLink className="quick-book">
-          <i className="ph-duotone ph-calendar-check" aria-hidden="true" />
+          <i className="ph ph-calendar-check" aria-hidden="true" />
           Book
         </BookLink>
       </nav>
@@ -577,7 +579,7 @@ export function SiteFooter({ branches, emergencyNumber }) {
       {real(emergencyNumber) && (
         <div className="emergency">
           <p>
-            <i className="ph-duotone ph-first-aid" aria-hidden="true" />
+            <i className="ph ph-first-aid" aria-hidden="true" />
             Dental emergency? Call <a href={'tel:' + emergencyNumber.replace(/[^\d+]/g, '')}>{emergencyNumber}</a>
           </p>
         </div>
