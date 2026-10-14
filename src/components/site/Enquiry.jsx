@@ -200,9 +200,9 @@ export default function EnquirySection({ enquiry, branches }) {
             )}
           </div>
 
-          <aside aria-label="Call or WhatsApp a branch" className="book-side">
+          <aside aria-label="Call a branch" className="book-side">
             <h3 className="h3">Prefer to talk?</h3>
-            <p>Call or WhatsApp either branch directly.</p>
+            <p>Call either branch directly.</p>
             {branches.map((b) => (
               <div key={b.slug} className="stack gap-8">
                 <p className="option-name">
@@ -212,10 +212,6 @@ export default function EnquirySection({ enquiry, branches }) {
                   <a href={b.telHref} className="btn btn-outline">
                     <i className="ph-duotone ph-phone" aria-hidden="true" />
                     {b.phone}
-                  </a>
-                  <a href={b.waHref} target="_blank" rel="noopener" className="btn btn-wa">
-                    <i className="ph-duotone ph-whatsapp-logo" aria-hidden="true" />
-                    WhatsApp
                   </a>
                 </div>
               </div>
