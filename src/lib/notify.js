@@ -1,26 +1,24 @@
 import 'server-only';
 
-// Emails the clinic about a new booking via Resend. Failures are logged, never thrown:
-// the booking is already saved and the patient should still see success.
-export async function notifyNewBooking({ ref, branch, dateLabel, timeLabel, name, phone, treatment, note }) {
+export const hasEnquiryEmail = () => Boolean(process.env.RESEND_API_KEY && process.env.CLINIC_EMAIL);
+
+// Emails the clinic a question from the "Ask us a question" form via Resend.
+// The email is the only copy of the question, so this returns false on any failure
+// and the visitor is told to try again or call/WhatsApp instead.
+export async function notifyNewEnquiry({ name, phone, message }) {
   const key = process.env.RESEND_API_KEY;
   const to = process.env.CLINIC_EMAIL;
-  if (!key || !to) return;
+  if (!key || !to) return false;
   const text = [
-    `New booking ${ref}`,
+    'New question from the website',
     '',
-    `Branch: ${branch}`,
-    `Date: ${dateLabel}`,
-    `Time: ${timeLabel}`,
-    `Patient: ${name}`,
+    `Name: ${name}`,
     `Phone: +91 ${phone}`,
-    `For: ${treatment}`,
-    note ? `Note: ${note}` : null,
     '',
-    'Confirm it in the admin panel, then call or WhatsApp the patient.',
-  ]
-    .filter((l) => l !== null)
-    .join('\n');
+    message,
+    '',
+    'Please call or WhatsApp them with an answer. This is a question, not an appointment.',
+  ].join('\n');
   try {
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -28,13 +26,18 @@ export async function notifyNewBooking({ ref, branch, dateLabel, timeLabel, name
       body: JSON.stringify({
         from: process.env.RESEND_FROM || 'Vaitik Dental Care <onboarding@resend.dev>',
         to: to.split(',').map((s) => s.trim()),
-        subject: `New booking ${ref}: ${branch}, ${dateLabel} ${timeLabel}`,
+        subject: `New question from ${name} (+91 ${phone})`,
         text,
       }),
       signal: AbortSignal.timeout(5000),
     });
-    if (!res.ok) console.error('Resend email failed', res.status, await res.text());
+    if (!res.ok) {
+      console.error('Resend email failed', res.status, await res.text());
+      return false;
+    }
+    return true;
   } catch (e) {
     console.error('Resend email failed', e);
+    return false;
   }
 }

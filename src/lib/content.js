@@ -6,6 +6,8 @@
 
 export const SITE = {
   name: 'Vaitik Dental Care',
+  // Appointments are booked on ClinicDesk. Every "Book appointment" button opens this in a new tab.
+  bookingUrl: 'https://clinicdesk-app.netlify.app/book/vaitik-dental-care',
   established: '[YEAR]',
   facebook: '[FACEBOOK LINK]',
   instagram: '[INSTAGRAM LINK]',

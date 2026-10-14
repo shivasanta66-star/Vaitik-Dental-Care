@@ -5,7 +5,7 @@ import { branchView } from '@/lib/branch.js';
 import { FAQS, SITE, real, withoutPlaceholders } from '@/lib/content.js';
 import { clinicNow } from '@/lib/time.js';
 import ImageSlot from '../ImageSlot.jsx';
-import BookingSection, { HoursTable, useBooking } from './Booking.jsx';
+import EnquirySection, { BookLink, HoursTable, useEnquiry } from './Enquiry.jsx';
 
 const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -39,7 +39,7 @@ function preview(text) {
 export default function Site({ data, view = 'home', serverNow }) {
   const isHome = view === 'home';
   const now = useClinicNow(serverNow);
-  const booking = useBooking(data.settings);
+  const enquiry = useEnquiry();
   const [menu, setMenu] = useState(false);
   const [chooser, setChooser] = useState(null); // 'wa' | 'call' | null
   const [faq, setFaq] = useState(0);
@@ -72,11 +72,11 @@ export default function Site({ data, view = 'home', serverNow }) {
     if (lightbox != null) lbClose.current?.focus();
   }, [lightbox]);
 
-  const goBook = () => {
+  const goAsk = () => {
     setMenu(false);
     setChooser(null);
-    scrollToId('book');
-    setTimeout(() => document.getElementById('bk-name')?.focus({ preventScroll: true }), 500);
+    scrollToId('ask');
+    setTimeout(() => document.getElementById('ask-name')?.focus({ preventScroll: true }), 500);
   };
   const openWa = () => {
     setChooser('wa');
@@ -85,11 +85,6 @@ export default function Site({ data, view = 'home', serverNow }) {
   const openCall = () => {
     setChooser('call');
     setMenu(false);
-  };
-  const bookTreatment = (name) => {
-    booking.setF('treatment', name);
-    if (booking.phase !== 'form' && !booking.ref) booking.setPhase('form');
-    goBook();
   };
   const tabKeys = (e) => {
     if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
@@ -117,11 +112,17 @@ export default function Site({ data, view = 'home', serverNow }) {
             <a href={home + '#branches'}>Branches</a>
             <a href={home + '#reviews'}>Reviews</a>
             <a href={home + '#visit'}>Visit us</a>
-            <button type="button" onClick={goBook} className="nav-book">
-              Book<span className="odia">ବୁକ୍ କରନ୍ତୁ</span>
+            <button type="button" onClick={goAsk} className="nav-ask">
+              Ask a question
             </button>
+            <BookLink className="nav-book">
+              Book Appointment<span className="odia">ବୁକ୍ କରନ୍ତୁ</span>
+            </BookLink>
           </nav>
           <div className="nav-phone">
+            <BookLink className="nav-book nav-book-phone">
+              Book Appointment
+            </BookLink>
             <button type="button" aria-label="Open menu" aria-expanded={menu} onClick={() => setMenu(!menu)} className="icon-btn">
               <i className={'ph-duotone ' + (menu ? 'ph-x' : 'ph-list')} />
             </button>
@@ -140,9 +141,12 @@ export default function Site({ data, view = 'home', serverNow }) {
                 {label}
               </a>
             ))}
-            <button type="button" onClick={goBook}>
-              Book appointment · <span className="odia">ବୁକ୍ କରନ୍ତୁ</span>
-            </button>
+            <a href={home + '#ask'} onClick={() => setMenu(false)}>
+              Ask a question
+            </a>
+            <BookLink className="nav-mobile-book" onClick={() => setMenu(false)}>
+              Book Appointment · <span className="odia">ବୁକ୍ କରନ୍ତୁ</span>
+            </BookLink>
           </nav>
         )}
       </header>
@@ -163,12 +167,12 @@ export default function Site({ data, view = 'home', serverNow }) {
                     {branches[0] && <> <span aria-hidden="true">/</span> {branches[0].summary}</>}
                   </p>
                   <div className="hero-ctas">
+                    <BookLink className="btn btn-stack hero-book">
+                      Book Appointment<span className="odia">ଆପଏଣ୍ଟମେଣ୍ଟ ବୁକ୍ କରନ୍ତୁ</span>
+                    </BookLink>
                     <button type="button" onClick={openWa} className="btn btn-wa hero-wa">
                       <i className="ph-duotone ph-whatsapp-logo" />
                       WhatsApp us
-                    </button>
-                    <button type="button" onClick={goBook} className="btn btn-stack hero-book">
-                      Book appointment<span className="odia">ଆପଏଣ୍ଟମେଣ୍ଟ ବୁକ୍ କରନ୍ତୁ</span>
                     </button>
                   </div>
                 </div>
@@ -255,10 +259,11 @@ export default function Site({ data, view = 'home', serverNow }) {
                       <h3 className="treat-name">{t.name}</h3>
                       <p className="treat-desc">{t.desc}</p>
                       <p className="treat-price">{real(t.price)}</p>
-                      <button type="button" onClick={() => bookTreatment(t.name)} className="btn-link treat-book" aria-label={'Book ' + t.name}>
+                      <BookLink className="btn-link treat-book">
                         Book
+                        <span className="visually-hidden"> {t.name} (opens in a new tab)</span>
                         <i className="ph-duotone ph-arrow-right" aria-hidden="true" />
-                      </button>
+                      </BookLink>
                     </li>
                   ))}
                 </ul>
@@ -395,7 +400,23 @@ export default function Site({ data, view = 'home', serverNow }) {
           </>
         )}
 
-        <BookingSection booking={booking} branches={data.branches} treatments={data.treatments} settings={data.settings} now={now} />
+        {isHome && (
+          <section aria-labelledby="cta-title" className="cta-band">
+            <div className="wrap cta-inner">
+              <div className="stack gap-8">
+                <h2 id="cta-title" className="h2">
+                  Ready to see us?
+                </h2>
+                <p>Pick your branch, date and time online. It takes under a minute.</p>
+              </div>
+              <BookLink className="btn btn-stack cta-book">
+                Book Appointment<span className="odia">ଆପଏଣ୍ଟମେଣ୍ଟ ବୁକ୍ କରନ୍ତୁ</span>
+              </BookLink>
+            </div>
+          </section>
+        )}
+
+        <EnquirySection enquiry={enquiry} branches={branches} />
 
         {isHome && (
           <>
@@ -517,10 +538,10 @@ export default function Site({ data, view = 'home', serverNow }) {
           <i className="ph-duotone ph-whatsapp-logo" aria-hidden="true" />
           WhatsApp
         </button>
-        <button type="button" onClick={goBook} className="quick-book">
+        <BookLink className="quick-book">
           <i className="ph-duotone ph-calendar-check" aria-hidden="true" />
           Book
-        </button>
+        </BookLink>
       </nav>
 
       {lbItem && (
