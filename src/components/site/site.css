@@ -197,15 +197,23 @@ p { text-wrap: pretty; }
 .rev-links { display: flex; gap: 16px; flex-wrap: wrap; }
 .rev-links a { font-weight: 600; min-height: 44px; display: flex; align-items: center; }
 /* One featured review, the rest set as quieter columns. */
-.rev-layout { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
-.rev-card { margin: 0; display: flex; flex-direction: column; gap: 16px; border-top: 1px solid var(--rule); padding-top: 20px; }
-.rev-card.is-lead { grid-column: 1 / -1; border-top: 2px solid var(--navy-900); }
-.rev-card.is-lead blockquote { font-family: var(--font-head); font-size: clamp(20px, 2.4vw, 26px); line-height: 1.4; max-width: 60ch; color: var(--navy-900); }
+.rev-layout { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.rev-card {
+  margin: 0; display: flex; flex-direction: column; gap: 14px; padding: 24px;
+  background: var(--white); border: 1px solid var(--blue-200); border-radius: var(--radius);
+}
+.rev-who { display: flex; align-items: center; gap: 12px; }
+.rev-avatar {
+  flex: none; width: 40px; height: 40px; border-radius: 999px; background: var(--blue-50); color: var(--navy-700);
+  display: grid; place-items: center; font-weight: 700;
+}
+.rev-name { display: flex; flex-direction: column; line-height: 1.3; }
+.rev-name strong { color: var(--ink); }
+.rev-source { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; color: var(--muted); }
 .rev-card blockquote { margin: 0; flex: 1; }
-.rev-card blockquote .rev-more { color: #0b5cc7; font-weight: 600; white-space: nowrap; font-family: var(--font-body); font-size: 16px; }
-.rev-card blockquote .rev-more:hover { color: #084a9f; text-decoration: underline; }
-.rev-card figcaption { font-size: 14px; color: var(--muted); }
-.rev-card figcaption strong { color: var(--ink); }
+.rev-card blockquote p { margin: 0; }
+.rev-more { align-self: flex-start; color: #0b5cc7; font-weight: 600; font-size: 15px; }
+.rev-more:hover { color: #084a9f; text-decoration: underline; }
 @media (max-width: 899px) { .rev-layout { grid-template-columns: 1fr; } }
 
 /* ---------- book appointment call to action ---------- */
@@ -413,7 +421,7 @@ p { text-wrap: pretty; }
 .logo { display: flex; }
 .footer-links { gap: 20px; margin-top: 0; }
 .footer-bottom div { gap: 20px; }
-.rev-card blockquote .rev-more { display: inline-block; padding: 12px 0; margin: -12px 0; }
+.rev-more { display: inline-block; padding: 12px 0; margin: -12px 0; }
 
 @media (max-width: 599px) {
   .wrap, .faq-wrap, .prose { padding-block: 36px; }

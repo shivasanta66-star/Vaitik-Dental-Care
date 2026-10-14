@@ -28,12 +28,21 @@ function useClinicNow(serverNow) {
   return now;
 }
 
-const REVIEW_PREVIEW_CHARS = 200;
+const REVIEW_PREVIEW_CHARS = 220;
 
-/** First ~200 characters of a review, cut at a word boundary. Full text stays on Google Maps. */
+/**
+ * Start of a review for the card: whole sentences up to ~220 characters, so it never stops mid-thought.
+ * Falls back to a word boundary with "…" when the first sentence alone is too long. Full text stays on Google Maps.
+ * Only spacing is tidied; the patient's own words are kept as written.
+ */
 function preview(text) {
-  if (text.length <= REVIEW_PREVIEW_CHARS) return text;
-  return text.slice(0, REVIEW_PREVIEW_CHARS).replace(/\s+\S*$/, '').replace(/[\s,.;:-]+$/, '') + '… ';
+  const t = text.replace(/\s+/g, ' ').trim();
+  if (t.length <= REVIEW_PREVIEW_CHARS) return { text: t, cut: false };
+  const head = t.slice(0, REVIEW_PREVIEW_CHARS + 1);
+  let end = -1;
+  for (const m of head.matchAll(/[.!?](?=["'”]?(?:\s|[A-Z]))/g)) end = m.index + 1;
+  if (end >= 80) return { text: head.slice(0, end), cut: true };
+  return { text: head.replace(/\s+\S*$/, '').replace(/[\s,.;:"'-]+$/, '') + '…', cut: true };
 }
 
 export default function Site({ data, view = 'home', serverNow }) {
@@ -368,31 +377,34 @@ export default function Site({ data, view = 'home', serverNow }) {
                     </div>
                   </div>
                   <div className="rev-layout">
-                    {data.reviews.map((r, i) => (
-                      <figure key={i} className={'rev-card' + (i === 0 ? ' is-lead' : '')}>
-                        <blockquote>
-                          {preview(r.text)}
-                          {r.text.length > REVIEW_PREVIEW_CHARS && (
-                            <>
-                              {' '}
-                              <a
-                                className="rev-more"
-                                href={r.branch === 'Semiliguda' ? SITE.reviewsSemiliguda : SITE.reviewsKoraput}
-                                target="_blank"
-                                rel="noopener"
-                                aria-label={'Read the full review by ' + r.initial + ' on Google Maps'}
-                              >
-                                Read more
-                              </a>
-                            </>
+                    {data.reviews.map((r, i) => {
+                      const p = preview(r.text);
+                      const href = r.branch === 'Semiliguda' ? SITE.reviewsSemiliguda : SITE.reviewsKoraput;
+                      return (
+                        <figure key={i} className="rev-card">
+                          <figcaption className="rev-who">
+                            <span aria-hidden="true" className="rev-avatar">
+                              {r.initial.trim().charAt(0).toUpperCase()}
+                            </span>
+                            <span className="rev-name">
+                              <strong>{r.initial}</strong>
+                              <span className="rev-source">
+                                <i className="ph-duotone ph-google-logo" aria-hidden="true" />
+                                Google review{r.branch ? ' · ' + r.branch : ''}
+                              </span>
+                            </span>
+                          </figcaption>
+                          <blockquote>
+                            <p>{p.text}</p>
+                          </blockquote>
+                          {p.cut && (
+                            <a className="rev-more" href={href} target="_blank" rel="noopener" aria-label={'Read the full review by ' + r.initial + ' on Google Maps'}>
+                              Read full review on Google
+                            </a>
                           )}
-                        </blockquote>
-                        <figcaption>
-                          <strong>{r.initial}</strong>
-                          {r.branch ? ', ' + r.branch : ''}
-                        </figcaption>
-                      </figure>
-                    ))}
+                        </figure>
+                      );
+                    })}
                   </div>
                 </div>
               </section>
