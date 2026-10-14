@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { waHref } from '@/lib/branch.js';
 import { SITE } from '@/lib/content.js';
 import { MESSAGES, MESSAGE_MAX, cleanMobile } from '@/lib/bookingRules.js';
 
-const EMPTY = { name: '', mobile: '', message: '', consent: false, hp: '' };
+const EMPTY = { name: '', mobile: '', message: '' };
 const FIELD_IDS = { name: 'ask-name', mobile: 'ask-mobile', message: 'ask-message' };
 
 function validate(f) {
@@ -12,18 +13,29 @@ function validate(f) {
   if (f.name.trim().length < 2) e.name = MESSAGES.name;
   if (!/^[6-9]\d{9}$/.test(cleanMobile(f.mobile))) e.mobile = MESSAGES.mobile;
   if (!f.message.trim()) e.message = MESSAGES.message;
-  if (!f.consent) e.consent = MESSAGES.consent;
   return e;
 }
 
 function focusFirstError(keys) {
   setTimeout(() => {
-    const el = document.getElementById(FIELD_IDS[keys[0]]) || document.querySelector('#ask [role=alert]');
+    const el = document.getElementById(FIELD_IDS[keys[0]]);
     if (el) {
       window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 120 });
-      el.focus?.({ preventScroll: true });
+      el.focus({ preventScroll: true });
     }
   }, 30);
+}
+
+/** The WhatsApp message the patient sends to the chosen branch. */
+export function questionText(branch, f) {
+  return [
+    'Hello Vaitik Dental Care (' + branch.name + '). I have a question.',
+    '',
+    'Name: ' + f.name.trim(),
+    'Mobile: +91 ' + cleanMobile(f.mobile),
+    '',
+    f.message.trim(),
+  ].join('\n');
 }
 
 /** "Book appointment" link to ClinicDesk. Always opens in a new tab. */
@@ -35,12 +47,12 @@ export function BookLink({ className, children, onClick }) {
   );
 }
 
-// "Ask us a question" form state.
+// "Ask us a question" form state. Nothing is sent from the website: the
+// question opens in WhatsApp, and the patient presses Send there.
 export function useEnquiry() {
   const [f, setFState] = useState(EMPTY);
   const [err, setErr] = useState({});
-  const [phase, setPhase] = useState('form'); // form | loading | success | error
-  const [message, setMessage] = useState('');
+  const [sent, setSent] = useState(null); // { branch, href } once WhatsApp has been opened
 
   const setF = (k, v) => {
     setFState((prev) => ({ ...prev, [k]: v }));
@@ -52,35 +64,8 @@ export function useEnquiry() {
     });
   };
 
-  const send = async () => {
-    setPhase('loading');
-    try {
-      const res = await fetch('/api/bookings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: f.name, mobile: f.mobile, message: f.message, consent: f.consent, website: f.hp }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (res.ok) {
-        setPhase('success');
-        return;
-      }
-      if (data.fields) {
-        setErr(data.fields);
-        setPhase('form');
-        focusFirstError(Object.keys(data.fields));
-        return;
-      }
-      setMessage(data.error || '');
-      setPhase('error');
-    } catch {
-      setMessage('');
-      setPhase('error');
-    }
-  };
-
-  const submit = (e) => {
-    e?.preventDefault?.();
+  // Called from the click itself, so the browser allows the new tab / WhatsApp app to open.
+  const sendTo = (branch) => {
     const errors = validate(f);
     const keys = Object.keys(errors);
     if (keys.length) {
@@ -88,17 +73,18 @@ export function useEnquiry() {
       focusFirstError(keys);
       return;
     }
-    send();
+    const href = waHref(branch, questionText(branch, f));
+    window.open(href, '_blank', 'noopener,noreferrer');
+    setSent({ branch, href });
   };
 
   const reset = () => {
     setFState(EMPTY);
     setErr({});
-    setPhase('form');
-    setMessage('');
+    setSent(null);
   };
 
-  return { f, err, phase, message, setF, setPhase, submit, retry: send, reset };
+  return { f, err, sent, setF, sendTo, back: () => setSent(null), reset };
 }
 
 function FieldError({ id, children }) {
@@ -111,19 +97,18 @@ function FieldError({ id, children }) {
 }
 
 export default function EnquirySection({ enquiry, branches }) {
-  const { f, err, phase, message, setF, setPhase, submit, retry, reset } = enquiry;
-  const firstName = f.name.trim().split(' ')[0] || 'thank you';
+  const { f, err, sent, setF, sendTo, back, reset } = enquiry;
   const on = (k) => (e) => setF(k, e.target.value);
   const inputCls = (k) => 'input' + (err[k] ? ' is-invalid' : '');
 
   return (
-    <section id="ask" aria-labelledby="ask-title" className="book-section tint anchor">
+    <section id="ask" aria-labelledby="ask-title" className="book-section tint">
       <div className="wrap stack gap-24">
         <div className="stack gap-8">
           <h2 id="ask-title" className="h2 book-title">
             Ask us a question <span className="odia">ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ</span>
           </h2>
-          <p className="muted">Not sure about a treatment, the cost or what to expect? Send us your question and we will call or WhatsApp you with an answer.</p>
+          <p className="muted">Not sure about a treatment, the cost or what to expect? Type your question and send it to us on WhatsApp. We will reply there or call you.</p>
           <p className="notice ask-note">
             This form is for questions only and does not book an appointment.{' '}
             <BookLink className="ask-note-link">Book an appointment online</BookLink> instead.
@@ -131,15 +116,8 @@ export default function EnquirySection({ enquiry, branches }) {
         </div>
         <div className="book-layout">
           <div className="book-panel">
-            {phase === 'form' && (
-              <form noValidate onSubmit={submit} aria-describedby="ask-title" className="book-form">
-                <div aria-hidden="true" className="honeypot">
-                  <label>
-                    Leave this empty
-                    <input type="text" name="website" tabIndex={-1} autoComplete="off" value={f.hp} onChange={on('hp')} />
-                  </label>
-                </div>
-
+            {!sent && (
+              <form noValidate onSubmit={(e) => e.preventDefault()} aria-describedby="ask-title" className="book-form">
                 <div className="field-row">
                   <div className="field">
                     <label htmlFor="ask-name">Full name</label>
@@ -175,64 +153,46 @@ export default function EnquirySection({ enquiry, branches }) {
                   <FieldError id="ask-message-err">{err.message}</FieldError>
                 </div>
 
-                <div className="field">
-                  <label className="consent">
-                    <input type="checkbox" checked={f.consent} onChange={(e) => setF('consent', e.target.checked)} />
-                    <span>
-                      I agree to be contacted about my question. <a href="/privacy">Privacy policy</a>
-                    </span>
-                  </label>
-                  <FieldError>{err.consent}</FieldError>
-                </div>
-
-                <button type="submit" className="btn btn-dark submit">
-                  Send question
-                  <span className="odia">ପ୍ରଶ୍ନ ପଠାନ୍ତୁ</span>
-                </button>
-                <p className="small muted center">Please do not share medical history here; we discuss that in person.</p>
+                <fieldset className="fieldset">
+                  <legend>Send on WhatsApp to</legend>
+                  <div className="ask-send">
+                    {branches.map((b) => (
+                      <button key={b.slug} type="button" onClick={() => sendTo(b)} className="btn btn-wa ask-send-btn">
+                        <i className="ph-duotone ph-whatsapp-logo" aria-hidden="true" />
+                        <span>
+                          {b.name} <span className="odia">{b.odia}</span>
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
+                <p className="small muted center">
+                  WhatsApp opens with your question typed in. Nothing is sent until you press Send there. Please do not share medical history; we discuss that in person.
+                </p>
               </form>
             )}
 
-            {phase === 'loading' && (
-              <div role="status" aria-live="polite" className="loading">
-                <span aria-hidden="true" className="spinner" />
-                <p style={{ fontWeight: 600 }}>Sending your question…</p>
-                <p className="small muted">Please keep this page open.</p>
-              </div>
-            )}
-
-            {phase === 'success' && (
+            {sent && (
               <div role="status" aria-live="polite" className="stack gap-16">
                 <span aria-hidden="true" className="result-icon">
-                  <i className="ph-duotone ph-check-circle" />
+                  <i className="ph-duotone ph-whatsapp-logo" />
                 </span>
                 <h3 className="h3" style={{ fontSize: 24 }}>
-                  Question received, {firstName}.
+                  Now press Send in WhatsApp
                 </h3>
                 <p>
-                  We will call or WhatsApp you on <strong>{'+91 ' + cleanMobile(f.mobile)}</strong> with an answer. This has not booked an appointment.
+                  Your question is typed into a WhatsApp chat with our <strong>{sent.branch.name}</strong> branch. It reaches us only after you press Send. Sending a question does not book an
+                  appointment.
                 </p>
                 <div className="result-actions">
-                  <BookLink className="btn btn-dark">Book appointment</BookLink>
+                  <a href={sent.href} target="_blank" rel="noopener noreferrer" className="btn btn-wa">
+                    <i className="ph-duotone ph-whatsapp-logo" aria-hidden="true" />
+                    WhatsApp did not open? Tap here
+                  </a>
                   <button type="button" onClick={reset} className="btn btn-outline">
                     Ask another question
                   </button>
-                </div>
-              </div>
-            )}
-
-            {phase === 'error' && (
-              <div role="alert" className="stack gap-16">
-                <span aria-hidden="true" className="result-icon is-error">
-                  <i className="ph-duotone ph-warning" />
-                </span>
-                <h3 style={{ fontSize: 22, color: 'var(--danger)' }}>Your question did not go through</h3>
-                <p>{message || 'This is usually a weak network. Your question is saved on this page. Try again, or call or WhatsApp us.'}</p>
-                <div className="result-actions">
-                  <button type="button" onClick={retry} className="btn btn-dark" style={{ padding: '0 28px' }}>
-                    Try again
-                  </button>
-                  <button type="button" onClick={() => setPhase('form')} className="btn-link" style={{ minHeight: 52, padding: '0 16px', alignSelf: 'auto' }}>
+                  <button type="button" onClick={back} className="btn-link" style={{ minHeight: 52, padding: '0 16px', alignSelf: 'auto' }}>
                     Edit question
                   </button>
                 </div>

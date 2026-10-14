@@ -17,16 +17,13 @@ Website, "Ask us a question" form and staff admin for Vaitik Dental Care (Korapu
 | Database tables, security rules, booking function, dashboard views | `supabase/migrations/*.sql` |
 | Starting data (branches, hours, treatments, settings) | `supabase/seed.sql` |
 | Free-slot calculation (hours − holidays − bookings − past times) | `src/lib/slots.js` |
-| `GET /api/slots`, `POST /api/bookings` (now receives the question form) | `src/app/api/` |
+| `GET /api/slots`, `POST /api/bookings` (not used by the website any more) | `src/app/api/` |
 | `POST /api/payments/order`, `POST /api/payments/webhook` (Razorpay) | `src/app/api/payments/` |
 | Admin screens, and server actions checked against the staff role | `src/components/admin/`, `src/app/admin/actions.js` |
 | `/admin` login guard | `src/middleware.js` |
 | Content that is not in the database (FAQs, social links, privacy contact) | `src/lib/content.js` |
 
-**Questions.** The "Ask us a question" form (name, mobile, question) is for questions only; it does not book anything. `POST /api/bookings`:
-1. Limits each IP address to 5 messages per 10 minutes.
-2. Validates the form with zod: Indian 10-digit mobile, a question of up to 500 characters, consent ticked, and the hidden anti-spam field empty.
-3. Emails the question to `CLINIC_EMAIL` through Resend. The email is the only copy, so the form shows an error (and asks the visitor to call or WhatsApp) if Resend is not configured or the email fails.
+**Questions.** The "Ask us a question" form (name, mobile, question) is for questions only; it does not book anything. It sends nothing from the website: after checking the fields it opens WhatsApp (`wa.me`) to the branch the visitor picks, with the question typed in, and the visitor presses Send in WhatsApp. No keys or settings are needed for it.
 
 **Security.**
 - The public (anon) key can only read what the website shows.

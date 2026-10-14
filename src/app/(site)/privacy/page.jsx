@@ -35,27 +35,24 @@ export default async function PrivacyPage() {
         </p>
 
         <h2>What we collect</h2>
-        <p>When you send us a question through the &ldquo;Ask us a question&rdquo; form we collect only what the form asks for:</p>
-        <ul>
-          <li>your name and mobile number</li>
-          <li>your question (please do not include medical history; we discuss that in person)</li>
-          <li>your consent to be contacted about your question</li>
-        </ul>
         <p>
-          Your question is emailed to the clinic so we can answer it. To stop automated abuse of the form we also keep a scrambled (hashed) form of your internet address for one day. We do not collect medical records
+          The &ldquo;Ask us a question&rdquo; form does not send anything from this website. It opens WhatsApp with your name, mobile number and question typed in, and
+          nothing reaches us until you press Send in WhatsApp. Your message is then handled by WhatsApp and seen by our staff on the branch&rsquo;s WhatsApp number.
+          Please do not include medical history; we discuss that in person. We do not collect medical records
           through this website, and we do not use advertising trackers.
         </p>
 
         <h2>Why we use it</h2>
         <p>
-          Only to arrange your appointment: to confirm it by phone or WhatsApp, to reschedule it if needed, and to keep a record of your visits at our clinic. We do not
+          Only to answer your question and to arrange your appointments: to reply by phone or WhatsApp, to confirm or reschedule a visit, and to keep a record of your
+          visits at our clinic. We do not
           sell your data or use it for marketing.
         </p>
 
         <h2>Who can see it</h2>
         <p>
-          Our doctors and front-desk staff. Your data is stored with the service providers that run this website: Supabase (database), Netlify (hosting) and Resend
-          (booking emails to the clinic). If you pay a booking fee online, Razorpay processes the payment; we never see your card or UPI details.
+          Our doctors and front-desk staff. Questions you send us on WhatsApp are carried by WhatsApp. Appointments you book online are handled by our booking system,
+          ClinicDesk. This website is hosted on Netlify.
         </p>
 
         <h2>How long we keep it</h2>
