@@ -158,7 +158,7 @@ export default function EnquirySection({ enquiry, branches }) {
                   <div className="ask-send">
                     {branches.map((b) => (
                       <button key={b.slug} type="button" onClick={() => sendTo(b)} className="btn btn-wa ask-send-btn">
-                        <i className="ph-duotone ph-whatsapp-logo" aria-hidden="true" />
+                        <i className="ph ph-whatsapp-logo" aria-hidden="true" />
                         <span>
                           {b.name} <span className="odia">{b.odia}</span>
                         </span>
@@ -175,7 +175,7 @@ export default function EnquirySection({ enquiry, branches }) {
             {sent && (
               <div role="status" aria-live="polite" className="stack gap-16">
                 <span aria-hidden="true" className="result-icon">
-                  <i className="ph-duotone ph-whatsapp-logo" />
+                  <i className="ph ph-whatsapp-logo" />
                 </span>
                 <h3 className="h3" style={{ fontSize: 24 }}>
                   Now press Send in WhatsApp
@@ -186,7 +186,7 @@ export default function EnquirySection({ enquiry, branches }) {
                 </p>
                 <div className="result-actions">
                   <a href={sent.href} target="_blank" rel="noopener noreferrer" className="btn btn-wa">
-                    <i className="ph-duotone ph-whatsapp-logo" aria-hidden="true" />
+                    <i className="ph ph-whatsapp-logo" aria-hidden="true" />
                     WhatsApp did not open? Tap here
                   </a>
                   <button type="button" onClick={reset} className="btn btn-outline">
@@ -210,7 +210,7 @@ export default function EnquirySection({ enquiry, branches }) {
                 </p>
                 <div className="side-actions">
                   <a href={b.telHref} className="btn btn-outline">
-                    <i className="ph-duotone ph-phone" aria-hidden="true" />
+                    <i className="ph ph-phone" aria-hidden="true" />
                     {b.phone}
                   </a>
                 </div>

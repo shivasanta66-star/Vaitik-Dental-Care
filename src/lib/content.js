@@ -32,7 +32,7 @@ export const real = (v) => (v && !isPlaceholder(v) ? v : '');
 export const withoutPlaceholders = (v) => (v || '').replace(/\s*\[[^\]]*\]/g, '').trim();
 
 export const FAQS = [
-  { q: 'How much will my treatment cost?', a: 'It depends on what the tooth needs. After the check-up we give you a written plan with the cost before we start. The "from" prices on this page are starting points only.' },
+  { q: 'How much will my treatment cost?', a: 'It depends on what the tooth needs. After the check-up we give you a written plan with the cost before we start. The “from” prices on this page are starting points only.' },
   { q: 'Will it hurt?', a: 'For procedures that need it, we numb the area with local anaesthesia first. Most people feel pressure rather than sharp pain. If you feel anything, raise your hand and we stop.' },
   { q: 'How long do braces take?', a: 'It depends on how much your teeth need to move. After the check-up and X-ray we give you an estimate and a visit schedule.' },
   { q: 'How many sittings does a root canal need?', a: 'Often one to three sittings, depending on the infection. A crown is usually placed afterwards to protect the tooth. We tell you the number at the start.' },
@@ -74,7 +74,7 @@ export const FALLBACK = {
     { name: 'Dentures', icon: 'ph-smiley-wink', desc: 'Full or partial removable teeth, made and adjusted to fit your mouth.', price: 'From Rs [PRICE]' },
     { name: 'Implants', icon: 'ph-anchor-simple', desc: 'A fixed replacement for a missing tooth, placed in the jaw bone.', price: 'Price after check-up' },
     { name: 'Cleaning and whitening', icon: 'ph-sparkle', desc: 'Scaling removes hard deposits that brushing cannot. Whitening is optional.', price: 'From Rs [PRICE]' },
-    { name: "Kids' dentistry", icon: 'ph-baby', desc: 'Check-ups, fillings and fluoride for children, done slowly and at their pace.', price: 'From Rs [PRICE]' },
+    { name: 'Kids’ dentistry', icon: 'ph-baby', desc: 'Check-ups, fillings and fluoride for children, done slowly and at their pace.', price: 'From Rs [PRICE]' },
   ],
   doctors: [
     { id: 'd1', name: 'Dr Ch Kartik', credentials: '[QUALIFICATION] · Dental Council Reg. No. [REG. NO.]', days: '[BRANCH DAYS, e.g. Koraput Mon–Sat, Semiliguda Sun evening]', focus: '[ONE LINE ON FOCUS, e.g. root canal treatment and extractions]', photo: null },

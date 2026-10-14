@@ -16,7 +16,7 @@ export const fmt = (m) => {
   const mm = m % 60;
   const ap = h >= 12 ? 'PM' : 'AM';
   h = h % 12 || 12;
-  return h + ':' + String(mm).padStart(2, '0') + ' ' + ap;
+  return h + ':' + String(mm).padStart(2, '0') + '\u00a0' + ap; // no line break inside "9:30 PM"
 };
 
 // "21:30" or "21:30:00" → 1290
