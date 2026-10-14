@@ -1,11 +1,11 @@
 # Vaitik Dental Care website
 
-Website, online booking and staff admin for Vaitik Dental Care (Koraput and Semiliguda).
+Website, "Ask us a question" form and staff admin for Vaitik Dental Care (Koraput and Semiliguda). Appointments are booked on ClinicDesk: every "Book Appointment" button opens `SITE.bookingUrl` (https://clinicdesk-app.netlify.app/book/vaitik-dental-care) in a new tab.
 
 - **Stack:** Next.js 15 (App Router) on Netlify, Supabase (Postgres, Auth, Storage, row level security), Resend for booking emails, and Razorpay for an optional booking fee (off by default).
 - **Pages:**
   - `/` is the website.
-  - `/book` is the booking form on its own page.
+  - `/book` redirects to the ClinicDesk booking page.
   - `/privacy` is the privacy policy.
   - `/admin` is the staff panel.
 - **Without Supabase configured,** the website still runs with the built-in content in `src/lib/content.js` (useful for local design work), but booking and admin are switched off.
@@ -17,19 +17,16 @@ Website, online booking and staff admin for Vaitik Dental Care (Koraput and Semi
 | Database tables, security rules, booking function, dashboard views | `supabase/migrations/*.sql` |
 | Starting data (branches, hours, treatments, settings) | `supabase/seed.sql` |
 | Free-slot calculation (hours − holidays − bookings − past times) | `src/lib/slots.js` |
-| `GET /api/slots`, `POST /api/bookings` | `src/app/api/` |
+| `GET /api/slots`, `POST /api/bookings` (now receives the question form) | `src/app/api/` |
 | `POST /api/payments/order`, `POST /api/payments/webhook` (Razorpay) | `src/app/api/payments/` |
 | Admin screens, and server actions checked against the staff role | `src/components/admin/`, `src/app/admin/actions.js` |
 | `/admin` login guard | `src/middleware.js` |
 | Content that is not in the database (FAQs, social links, privacy contact) | `src/lib/content.js` |
 
-**Bookings.** The browser never writes to the database directly. `POST /api/bookings`:
-1. Limits each IP address to 5 booking attempts per 10 minutes.
-2. Validates the form with zod: Indian 10-digit mobile, a date that isn't in the past and is at most 60 days ahead, consent ticked, and the hidden anti-spam field empty.
-3. Checks that the slot is free.
-4. Calls the `create_booking` database function, which re-checks the rules and creates the patient and appointment in one transaction.
-
-A unique index on (branch, date, time) makes double-booking impossible even when two people submit at the same moment; the second person sees "That time was just taken".
+**Questions.** The "Ask us a question" form (name, mobile, question) is for questions only; it does not book anything. `POST /api/bookings`:
+1. Limits each IP address to 5 messages per 10 minutes.
+2. Validates the form with zod: Indian 10-digit mobile, a question of up to 500 characters, consent ticked, and the hidden anti-spam field empty.
+3. Emails the question to `CLINIC_EMAIL` through Resend. The email is the only copy, so the form shows an error (and asks the visitor to call or WhatsApp) if Resend is not configured or the email fails.
 
 **Security.**
 - The public (anon) key can only read what the website shows.

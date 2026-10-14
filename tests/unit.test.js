@@ -5,7 +5,7 @@ import { branchStatus, hoursSummary } from '../src/lib/branch.js';
 import { paymentUpdateFromEvent, verifyWebhookSignature } from '../src/lib/razorpay.js';
 import { computeSlots } from '../src/lib/slots.js';
 import { addDaysYmd, clinicNow, dLabel, fmt, isYmd } from '../src/lib/time.js';
-import { cleanMobile, parseBooking } from '../src/lib/validation.js';
+import { cleanMobile, parseEnquiry } from '../src/lib/validation.js';
 
 const KORAPUT = { hours: [0, 1, 2, 3, 4, 5, 6].map(() => [540, 1290]), blocked: {} };
 const SEMILIGUDA = { hours: [0, 1, 2, 3, 4, 5, 6].map((d) => (d === 0 ? [1020, 1230] : [600, 1230])), blocked: {} };
@@ -65,23 +65,20 @@ test('open / closed badge', () => {
   assert.equal(branchStatus(holiday, tue(600)).label, 'Closed today · Opens tomorrow 9:00 AM');
 });
 
-test('booking validation', () => {
-  const today = clinicNow().ymd;
-  const good = { name: 'Ravi Kumar', mobile: '+91 98765 43210', branch: 'koraput', treatment: 'Root canal', date: addDaysYmd(today, 2), slot: 600, note: '', consent: true };
-  const ok = parseBooking(good);
+test('question form validation', () => {
+  const good = { name: 'Ravi Kumar', mobile: '+91 98765 43210', message: 'Do you do root canals on Sunday?', consent: true };
+  const ok = parseEnquiry(good);
   assert.equal(ok.data.mobile, '9876543210');
   assert.equal(cleanMobile('09876543210'), '9876543210');
 
-  const bad = (patch) => parseBooking({ ...good, ...patch }).errors;
+  const bad = (patch) => parseEnquiry({ ...good, ...patch }).errors;
   assert.ok(bad({ mobile: '5876543210' }).mobile, 'Indian mobiles start with 6-9');
   assert.ok(bad({ mobile: '98765' }).mobile);
   assert.ok(bad({ name: 'R' }).name);
-  assert.ok(bad({ date: addDaysYmd(today, -1) }).date, 'no past dates');
-  assert.ok(bad({ date: addDaysYmd(today, 61) }).date, 'no more than 60 days ahead');
-  assert.ok(bad({ date: '2026-13-01' }).date);
+  assert.ok(bad({ message: '   ' }).message, 'a question is required');
+  assert.ok(bad({ message: undefined }).message);
+  assert.ok(bad({ message: 'x'.repeat(501) }).message);
   assert.ok(bad({ consent: false }).consent);
-  assert.ok(bad({ slot: '' }).slot);
-  assert.ok(bad({ note: 'x'.repeat(201) }).note);
 });
 
 test('Razorpay webhook signature', () => {

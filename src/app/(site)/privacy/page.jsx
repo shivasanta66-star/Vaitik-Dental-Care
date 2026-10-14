@@ -22,8 +22,8 @@ export default async function PrivacyPage() {
             <span className="logo-word">VAITIK</span>
             <span className="logo-sub">dental care</span>
           </a>
-          <a href="/book" className="nav-book" style={{ textDecoration: 'none' }}>
-            Book<span className="odia">ବୁକ୍ କରନ୍ତୁ</span>
+          <a href={SITE.bookingUrl} target="_blank" rel="noopener noreferrer" className="nav-book">
+            Book Appointment<span className="odia">ବୁକ୍ କରନ୍ତୁ</span>
           </a>
         </div>
       </header>
@@ -35,15 +35,14 @@ export default async function PrivacyPage() {
         </p>
 
         <h2>What we collect</h2>
-        <p>When you book an appointment online we collect only what the booking form asks for:</p>
+        <p>When you send us a question through the &ldquo;Ask us a question&rdquo; form we collect only what the form asks for:</p>
         <ul>
           <li>your name and mobile number</li>
-          <li>the branch, the treatment or concern you chose, and your preferred date and time</li>
-          <li>the optional note you write (please do not include medical history; we discuss that in person)</li>
-          <li>your consent to be contacted about the appointment</li>
+          <li>your question (please do not include medical history; we discuss that in person)</li>
+          <li>your consent to be contacted about your question</li>
         </ul>
         <p>
-          To stop automated abuse of the booking form we also keep a scrambled (hashed) form of your internet address for one day. We do not collect medical records
+          Your question is emailed to the clinic so we can answer it. To stop automated abuse of the form we also keep a scrambled (hashed) form of your internet address for one day. We do not collect medical records
           through this website, and we do not use advertising trackers.
         </p>
 
