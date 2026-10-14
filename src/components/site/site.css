@@ -223,6 +223,10 @@ p { text-wrap: pretty; }
 .book-section { scroll-margin-top: 72px; }
 .ask-note { max-width: 62ch; font-size: 15px; }
 .ask-note-link { font-weight: 600; }
+.ask-send { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.ask-send-btn { min-height: 56px; font-size: 17px; }
+.ask-send-btn i { font-size: 24px; }
+.ask-send-btn .odia { font-size: 15px; font-weight: 500; }
 .book-title .odia { font-size: 18px; color: var(--muted); }
 .book-layout { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
 .book-panel {
